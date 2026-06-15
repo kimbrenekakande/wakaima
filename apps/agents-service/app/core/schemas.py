@@ -1,0 +1,25 @@
+from pydantic import BaseModel
+from typing import Optional
+
+class leadReq(BaseModel):
+    industry: str
+    country: str
+    
+
+class SearchResult(BaseModel):
+    name: Optional[str] = None
+    url: Optional[str] = None
+    contactUrl : Optional[str] = None
+    email : Optional[str] = None
+    profile : Optional[str] = None
+    draft : Optional[str]=None
+
+    
+class leadsSearchState(BaseModel):
+    industry: str
+    country: str
+    leads: list[SearchResult]
+
+
+class emailReq(BaseModel):
+    companies : list[SearchResult]
