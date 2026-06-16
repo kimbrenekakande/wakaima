@@ -439,15 +439,25 @@ export default function Particle() {
   const [country, setCountry] = useState<Country>(countries[0]);
 
   async function handleGenerate() {
-    console.log({ industry, country: country?.label });
-    const request = await fetch("/api/lead/", {
-      method: "POST",
-      headers: { "content-type": "application/json", "api" :"fuckaround&findout" },
-      body: JSON.stringify({  industry, country: country.label}),
-    });
+    try {
+      console.log({ industry, country: country?.label });
+      const response = await fetch("/api/lead/", {
+        method: "POST",
+        headers: { "content-type": "application/json", "api" :"fuckaround&findout" },
+        body: JSON.stringify({  industry, country: country.label}),
+      });
 
-    const response = await  request.json()
-    console.log(response)
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        console.error("API error:", response.status, errorBody);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Lead created:", data);
+    } catch (error) {
+      console.error("Failed to generate lead:", error);
+    }
   }
 
   return(

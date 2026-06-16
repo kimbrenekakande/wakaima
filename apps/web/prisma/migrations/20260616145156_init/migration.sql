@@ -1,9 +1,12 @@
 -- CreateTable
 CREATE TABLE "Lead" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT,
+    "name" TEXT NOT NULL,
+    "url" TEXT,
     "email" TEXT,
-    "profile" TEXT
+    "profile" TEXT,
+    "draft" TEXT,
+    "contacted" BOOLEAN NOT NULL
 );
 
 -- CreateIndex
