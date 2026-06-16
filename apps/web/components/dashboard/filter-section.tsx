@@ -10,6 +10,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowDown01Icon, Add01Icon, Invoice01Icon } from "@hugeicons/core-free-icons";
 import { useLeadsStore, DateFilter } from "@/store/leads-store";
+import Link from "next/link";
 
 const dateFilterLabels: Record<DateFilter, string> = {
   all: "All Time",
@@ -73,10 +74,12 @@ export function FilterSection() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button className="gap-2 bg-foreground text-background hover:bg-foreground/90">
-          <HugeiconsIcon icon={Add01Icon} className="size-4" />
-          <span>Create New</span>
-        </Button>
+        <Link href="/dashboard/form">
+          <Button className="gap-2 bg-foreground text-background hover:bg-foreground/90 cursor-pointer">
+            <HugeiconsIcon icon={Add01Icon} className="size-4" />
+            <span>Create New</span>
+          </Button>
+        </Link>
       </div>
     </div>
   );

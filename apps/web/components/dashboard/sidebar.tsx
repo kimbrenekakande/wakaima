@@ -77,9 +77,9 @@ export function DashboardSidebar({
     <Sidebar collapsible="offExamples" className="lg:border-r-0!" {...props}>
       <SidebarHeader className="p-3 sm:p-4 lg:p-5 pb-0">
         <div className="flex items-center gap-2 pb-2">
-          <div className="flex size-10 items-center justify-center rounded bg-linear-to-b from-[#FFFFFF] to-[#FFFFFF] text-white">
+          <div className="flex size-10 items-center justify-center rounded bg-linear-to-b from-[#cc6600] to-[#000000] text-white">
             <Image
-              src="/brand/wakaima-logo-black.png"
+              src="/brand/wakaima-logo-white.png"
               width={50}
               height={50}
               alt="wakaima logo" />
@@ -91,6 +91,7 @@ export function DashboardSidebar({
       <SidebarContent className="px-3 sm:px-4 lg:px-5">
 
         <SidebarGroup className="p-0">
+
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => {
@@ -106,13 +107,13 @@ export function DashboardSidebar({
                       <HugeiconsIcon
                         icon={item.icon}
                         className={`size-4 sm:size-5 ${
-                          item.isGradient ? "text-[#6e3ff3]" : ""
+                          item.isGradient ? "text-[#cc6600]" : ""
                         }`}
                       />
                       <span
                         className={`text-sm ${
                           item.isGradient
-                            ? "bg-clip-text text-transparent bg-linear-to-r from-[#6e3ff3] to-[#df3674]"
+                            ? "bg-clip-text text-transparent bg-linear-to-r from-[#cc6600] to-[#e67300]"
                             : ""
                         }`}
                       >

@@ -48,7 +48,7 @@ const statusConfig: Record<LeadStatus, { label: string; className: string }> = {
   contacted: {
     label: "Contacted",
     className:
-      "bg-purple-100 text-purple-800 dark:bg-purple-950/30 dark:text-purple-400 border-purple-200 dark:border-purple-800",
+      "bg-orange-100 text-orange-800 dark:bg-orange-950/30 dark:text-orange-400 border-orange-200 dark:border-orange-800",
   },
   qualified: {
     label: "Qualified",

@@ -92,11 +92,11 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
     const weekIndex = data.payload.week - 1;
     const monthIndex = Math.floor(weekIndex / 4);
     const monthName = monthNames[monthIndex] || "Apr";
-    
+
     const prevIndex = fullYearData.findIndex(d => d.week === data.payload.week) - 1;
     const prevValue = prevIndex >= 0 ? fullYearData[prevIndex].leads : data.value;
     const change = prevValue > 0 ? ((data.value - prevValue) / prevValue * 100).toFixed(1) : 0;
-    
+
     return (
       <div className="bg-card border rounded-md p-2">
         <p className="text-xs text-muted-foreground">{monthName}, 2025</p>
@@ -122,7 +122,7 @@ export function MonthlyLeadGrowthChart() {
 
   const axisColor = theme === "dark" ? "#525866" : "#868c98";
   const gridColor = theme === "dark" ? "#27272a" : "#e2e4e9";
-  const lineColor = "#6e3ff3";
+  const lineColor = "#cc6600";
 
   const getDataForPeriod = () => {
     switch (period) {
@@ -235,8 +235,8 @@ export function MonthlyLeadGrowthChart() {
                 <Tooltip content={<CustomTooltip />} />
                 <defs>
                   <linearGradient id="leadBarGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#6e3ff3" />
-                    <stop offset="100%" stopColor="#aa8ef9" />
+                    <stop offset="0%" stopColor="#cc6600" />
+                    <stop offset="100%" stopColor="#ffaa55" />
                   </linearGradient>
                 </defs>
                 <Bar dataKey="leads" fill="url(#leadBarGradient)" radius={[4, 4, 0, 0]} />
@@ -261,8 +261,8 @@ export function MonthlyLeadGrowthChart() {
                 <Tooltip content={<CustomTooltip />} />
                 <defs>
                   <linearGradient id="leadAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#6e3ff3" stopOpacity={0.15} />
-                    <stop offset="100%" stopColor="#6e3ff3" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#cc6600" stopOpacity={0.15} />
+                    <stop offset="100%" stopColor="#cc6600" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <Area
