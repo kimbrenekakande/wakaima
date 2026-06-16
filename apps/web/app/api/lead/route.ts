@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { leadReq } from "@/lib/types";
+import { prisma } from "@/lib/prisma";
 import AGENTIC_API_URL from "@/lib/service-url";
 
 export async function POST( request: Request) {
@@ -20,6 +21,19 @@ export async function POST( request: Request) {
   })
 
   const results = await response.json()
+  for (const lead of results.leads) {
+    prisma.lead.create({
+      data: {
+        name: lead.name,
+        url: lead.url,
+        email: lead.url,
+        profile: lead.profile,
+        contacted : false
+      }
+    })
+  }
+  
+  console.log(results.leads)
   
   return NextResponse.json({"companies" : results.leads})
 }
