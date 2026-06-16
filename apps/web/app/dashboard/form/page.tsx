@@ -14,6 +14,7 @@ import {
   ComboboxValue,
 } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
+import AGENTIC_API_URL from "@/lib/service-url";
 
 interface Country {
   code: string;
@@ -437,11 +438,19 @@ export default function Particle() {
   const [industry, setIndustry] = useState("");
   const [country, setCountry] = useState<Country>(countries[0]);
 
-  function handleGenerate() {
+  async function handleGenerate() {
     console.log({ industry, country: country?.label });
+    const request = await fetch("/api/lead/", {
+      method: "POST",
+      headers: { "content-type": "application/json", "api" :"fuckaround&findout" },
+      body: JSON.stringify({  industry, country: country.label}),
+    });
+
+    const response = await  request.json()
+    console.log(response)
   }
 
-  return (
+  return(
     <div className="h-screen w-screen flex justify-center items-center">
       <div className="w-1/4 flex flex-col gap-4">
         <Input aria-label="Enter text" placeholder="Enter Industry" type="text" className="bg-background border-border shadow-xs" value={industry} onChange={(e) => setIndustry(e.target.value)} />
@@ -481,6 +490,5 @@ export default function Particle() {
         </Button>
       </div>
     </div>
-
   );
 }

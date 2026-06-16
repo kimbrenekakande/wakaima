@@ -5,7 +5,7 @@ from fastapi import APIRouter
 
 router = APIRouter(prefix="/api/v1", tags=["Leads"])
 
-@router.get("/lead")
+@router.post("/lead")
 async def get_leads(body: leadReq):
 
     initial_state: leadsSearchState = leadsSearchState(
