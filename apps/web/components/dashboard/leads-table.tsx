@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
@@ -36,8 +35,8 @@ import {
   MoreHorizontalIcon,
   ArrowRight01Icon,
 } from "@hugeicons/core-free-icons";
-import { leads } from "@/mock-data/leads";
 import { useLeadsStore, LeadStatus, LeadSource } from "@/store/leads-store";
+import type { Lead } from "@/app/dashboard/page";
 
 const statusConfig: Record<LeadStatus, { label: string; className: string }> = {
   new: {
@@ -80,7 +79,11 @@ const sourceConfig: Record<LeadSource, string> = {
   email: "Email",
 };
 
-export function LeadsTable() {
+interface LeadsTableProps {
+  leads: Lead[];
+}
+
+export function LeadsTable({ leads }: LeadsTableProps) {
   const {
     searchQuery,
     statusFilter,
@@ -99,7 +102,7 @@ export function LeadsTable() {
 
   const owners = useMemo(() => {
     return [...new Set(leads.map((lead) => lead.owner))];
-  }, []);
+  }, [leads]);
 
   const filteredLeads = useMemo(() => {
     return leads.filter((lead) => {
@@ -117,7 +120,7 @@ export function LeadsTable() {
 
       return matchesSearch && matchesStatus && matchesSource && matchesOwner;
     });
-  }, [searchQuery, statusFilter, sourceFilter, ownerFilter]);
+  }, [leads, searchQuery, statusFilter, sourceFilter, ownerFilter]);
 
   const totalPages = Math.ceil(filteredLeads.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -279,10 +282,7 @@ export function LeadsTable() {
                 </TableHead>
                 <TableHead className="w-[110px]">Status</TableHead>
                 <TableHead className="w-[100px] hidden lg:table-cell">
-                  Source
-                </TableHead>
-                <TableHead className="w-[140px] hidden xl:table-cell">
-                  Owner
+                  Industry
                 </TableHead>
                 <TableHead className="w-[130px]">Created On</TableHead>
               </TableRow>
@@ -297,18 +297,7 @@ export function LeadsTable() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="size-6">
-                        <AvatarImage src={lead.avatar} />
-                        <AvatarFallback className="text-xs">
-                          {lead.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium text-sm">{lead.name}</span>
-                    </div>
+                    <span className="font-medium text-sm">{lead.name}</span>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     <span className="text-sm text-muted-foreground">
@@ -326,21 +315,9 @@ export function LeadsTable() {
                     </Badge>
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">
-                    <Badge variant="secondary" className="text-xs font-medium">
-                      {sourceConfig[lead.source]}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-cell">
-                    <div className="flex items-center gap-2">
-                      <div className="size-6 rounded-full bg-muted flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-muted-foreground uppercase">
-                          {lead.ownerInitials}
-                        </span>
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        {lead.owner}
-                      </span>
-                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      Computer retail
+                    </span>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center justify-between">

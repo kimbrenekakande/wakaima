@@ -5,8 +5,13 @@ import { StatsCards } from "./stats-cards";
 import { MonthlyLeadGrowthChart } from "./monthly-lead-growth-chart";
 import { LeadsByStatusChart } from "./leads-by-status-chart";
 import { LeadsTable } from "./leads-table";
+import type { Lead } from "@/app/dashboard/page";
 
-export function DashboardContent() {
+interface DashboardContentProps {
+  leads: Lead[];
+}
+
+export function DashboardContent({ leads }: DashboardContentProps) {
   return (
     <main className="flex-1 overflow-auto p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 bg-background w-full">
       <FilterSection />
@@ -15,7 +20,7 @@ export function DashboardContent() {
         <MonthlyLeadGrowthChart />
         <LeadsByStatusChart />
       </div>
-      <LeadsTable />
+      <LeadsTable leads={leads} />
     </main>
   );
 }
