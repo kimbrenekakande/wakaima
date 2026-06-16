@@ -145,7 +145,7 @@ export function LeadsTable({ leads }: LeadsTableProps) {
               className="size-4 text-muted-foreground"
             />
           </Button>
-          <h3 className="font-medium text-sm sm:text-base">Leads List</h3>
+          <h3 className="font-medium text-sm sm:text-base">Recent Leads</h3>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
