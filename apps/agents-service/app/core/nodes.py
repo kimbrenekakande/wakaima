@@ -61,7 +61,7 @@ async def draft_node(state: emailReq):
         response = groq.invoke(
             input=f"""
             write a mock lead generation email to the company {company.name} from a computer retail and repair company called Eagle Info Solutions.
-            the email should be custom tailord based of the comanies profile in this case {company.profile}
+            the email should be custom tailored based of the company's profile in this case {company.profile}
             dont add thing but just the letter , dont communicate. make sure the response is plain text no layout.
             """
         )

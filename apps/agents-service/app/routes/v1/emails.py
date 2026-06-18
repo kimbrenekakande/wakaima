@@ -10,8 +10,8 @@ router = APIRouter(prefix="/api/v1", tags=["Emails"])
 async def get_emails(body: emailReq):
     mail_list = body.companies
     initial_State: emailReq = emailReq(companies=mail_list)
-    x = await graph.ainvoke(initial_State)
-    return x
+    request = await graph.ainvoke(initial_State)
+    return request
 
 
 @router.get("/email/test")
