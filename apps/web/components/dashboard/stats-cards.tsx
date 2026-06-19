@@ -37,7 +37,7 @@ const stats = [
 
 export function StatsCards() {
   return (
-    <div className="bg-card text-card-foreground rounded-xl border">
+    <div className="border rounded-xl">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y divide-x-0 lg:divide-x sm:divide-y-0 divide-border">
         {stats.map((stat, index) => (
           <div key={index} className="p-4 sm:p-6 space-y-4">

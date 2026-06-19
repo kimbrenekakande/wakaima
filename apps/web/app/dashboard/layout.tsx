@@ -11,9 +11,11 @@ export default function DashboardLayout({
     <SidebarProvider className="bg-sidebar">
       <DashboardSidebar />
       <div className="h-svh overflow-hidden lg:p-2 w-full">
-        <div className="lg:border lg:rounded-md overflow-hidden flex flex-col items-center justify-start bg-container h-full w-full bg-background">
+        <div className="lg:border lg:rounded-md overflow-hidden flex flex-col items-stretch justify-start bg-container h-full w-full bg-background">
           <DashboardHeader />
-          {children}
+          <div className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+            {children}
+          </div>
         </div>
       </div>
     </SidebarProvider>

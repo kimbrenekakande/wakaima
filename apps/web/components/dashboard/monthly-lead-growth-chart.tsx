@@ -146,7 +146,7 @@ export function MonthlyLeadGrowthChart() {
   };
 
   return (
-    <div className="bg-card text-card-foreground rounded-xl border flex-1">
+    <div className="border rounded-xl flex-1">
       <div className="flex flex-row items-center justify-between py-5 px-5">
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" className="size-8">
