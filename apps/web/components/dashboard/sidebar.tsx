@@ -59,7 +59,8 @@ const menuItems = [
   {
     title: "Emails",
     icon: Notification01Icon,
-    href: "#",
+    href: "/dashboard/emails",
+    matchPath: (pathname: string) => pathname.startsWith("/dashboard/emails"),
   },
   {
     title: "Contacts",
