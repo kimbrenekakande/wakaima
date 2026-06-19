@@ -29,7 +29,7 @@ import {
   FilterIcon,
   MoreHorizontalIcon,
   Invoice01Icon,
-  Building01Icon,
+  OfficeIcon,
 } from "@hugeicons/core-free-icons";
 import type { Lead } from "@/app/dashboard/page";
 import type { LeadStatus, LeadSource } from "@/store/leads-store";
@@ -286,7 +286,7 @@ export function DashboardContent({ leads }: DashboardContentProps) {
                   <TableRow key={lead.id}>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <HugeiconsIcon icon={Building01Icon} className="size-5 text-muted-foreground shrink-0" />
+                        <HugeiconsIcon icon={OfficeIcon} className="size-5 text-muted-foreground shrink-0" />
                         <span className="font-medium text-sm">{lead.name}</span>
                       </div>
                     </TableCell>
