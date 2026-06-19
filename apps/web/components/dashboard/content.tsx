@@ -23,4 +23,4 @@ export function DashboardContent({ leads }: DashboardContentProps) {
       <LeadsTable leads={leads} />
     </main>
   );
-}
+} 

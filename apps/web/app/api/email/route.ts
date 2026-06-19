@@ -3,33 +3,26 @@ import AGENTIC_API_URL from "@/lib/service-url";
 import { prisma } from "@/lib/prisma";
 
 
-export async function POST(request: Request) {
-  const body = await request.json();
-  if (!body.leads)
-    return NextResponse.json(
-      { error: "Leads required to generate email drafts" },
-      { status: 400 },
-    );
+export async function GET() {
+  const leads = await prisma.lead.findMany()
+  const companies = leads.map(({id, name, email, profile}) => ({id, name, email, profile }))
 
-  const drafts: any[] = [];
+  const response = await fetch(`${AGENTIC_API_URL}/api/v1/email`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ "companies" : companies }),
+  });
 
-  for (const lead of body.leads) {
-    const response = await fetch(`${AGENTIC_API_URL}/api/v1/email`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(lead),
-    });
+  const result = await response.json();
 
-    const result = await response.json();
-    if (!result.draft) return new NextResponse(null, { status: 500 });
+  console.log(result)
 
-    drafts.push(result.draft);
-  }
+  if (!result.companies) return new NextResponse(null, { status: 500 });
 
-  for (const draft of drafts) {
+  for (const company of result.companies) {
     await prisma.lead.update({
-      where: { id: draft.id },
-      data: { draft: draft.message },
+      where: { id : company.id },
+      data: { draft: company.draft },
     });
   }
 

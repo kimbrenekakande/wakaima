@@ -7,6 +7,7 @@ class leadReq(BaseModel):
     
 
 class SearchResult(BaseModel):
+    id : Optional[int]
     name: Optional[str] = None
     url: Optional[str] = None
     contactUrl : Optional[str] = None

@@ -6,7 +6,7 @@ from fastapi import APIRouter
 router = APIRouter(prefix="/api/v1", tags=["Emails"])
 
 
-@router.get("/email")
+@router.post("/email")
 async def get_emails(body: emailReq):
     mail_list = body.companies
     initial_State: emailReq = emailReq(companies=mail_list)

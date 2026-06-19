@@ -56,7 +56,7 @@ const defaultEmails: EmailRecord[] = [
     to: "alice@acme.com",
     subject: "Following up on our call",
     status: "sent",
-    sentAt: new Date(Date.now() - 10 * 60_000).toISOString(),
+    sentAt: "2026-06-19T10:59:47.000Z",
   },
   {
     id: "em_2",
@@ -64,7 +64,7 @@ const defaultEmails: EmailRecord[] = [
     to: "bob@globex.com",
     subject: "Excited to connect",
     status: "queued",
-    sentAt: new Date(Date.now() - 2 * 60 * 60_000).toISOString(),
+    sentAt: "2026-06-19T09:09:47.000Z",
   },
   {
     id: "em_3",
@@ -72,7 +72,7 @@ const defaultEmails: EmailRecord[] = [
     to: "carol@initech.com",
     subject: "Your demo is ready",
     status: "failed",
-    sentAt: new Date(Date.now() - 3 * 24 * 60 * 60_000).toISOString(),
+    sentAt: "2026-06-16T11:09:47.000Z",
   },
 ];
 
@@ -94,7 +94,7 @@ export default function Emails() {
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/email?limit=50");
+      const res = await fetch("/api/email");
       if (!res.ok) return;
       const data = await res.json();
       setEmails(data.emails ?? []);
@@ -106,7 +106,7 @@ export default function Emails() {
   const generateDrafts = useCallback(async () => {
     setLoading(true);
     try {
-      await fetch("/api/v1/email", { method: "POST" });
+      await fetch("/api/email", { method: "GET" });
     } finally {
       setLoading(false);
     }
