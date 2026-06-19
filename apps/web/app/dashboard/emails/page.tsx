@@ -6,6 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -158,6 +159,7 @@ export default function EmailsPage() {
             <TableHead>Status</TableHead>
             <TableHead>Team</TableHead>
             <TableHead className="text-right">Budget</TableHead>
+            <TableHead className="w-10 text-right" />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -179,6 +181,23 @@ export default function EmailsPage() {
             </TableCell>
             <TableCell>Frontend Team</TableCell>
             <TableCell className="text-right">$12,500</TableCell>
+            <TableCell className="flex justify-end">
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button variant="ghost" size="icon" className="size-7">
+                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>View Details</DropdownMenuItem>
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>
@@ -198,6 +217,23 @@ export default function EmailsPage() {
             </TableCell>
             <TableCell>Mobile Team</TableCell>
             <TableCell className="text-right">$8,750</TableCell>
+            <TableCell className="flex justify-end">
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button variant="ghost" size="icon" className="size-7">
+                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>View Details</DropdownMenuItem>
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>
@@ -217,6 +253,23 @@ export default function EmailsPage() {
             </TableCell>
             <TableCell>Backend Team</TableCell>
             <TableCell className="text-right">$5,200</TableCell>
+            <TableCell className="flex justify-end">
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button variant="ghost" size="icon" className="size-7">
+                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>View Details</DropdownMenuItem>
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>
@@ -236,6 +289,23 @@ export default function EmailsPage() {
             </TableCell>
             <TableCell>DevOps Team</TableCell>
             <TableCell className="text-right">$3,800</TableCell>
+            <TableCell className="flex justify-end">
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button variant="ghost" size="icon" className="size-7">
+                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>View Details</DropdownMenuItem>
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>
@@ -255,6 +325,23 @@ export default function EmailsPage() {
             </TableCell>
             <TableCell>UX Team</TableCell>
             <TableCell className="text-right">$7,200</TableCell>
+            <TableCell className="flex justify-end">
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button variant="ghost" size="icon" className="size-7">
+                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>View Details</DropdownMenuItem>
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>
@@ -274,11 +361,28 @@ export default function EmailsPage() {
             </TableCell>
             <TableCell>Security Team</TableCell>
             <TableCell className="text-right">$2,100</TableCell>
+            <TableCell className="flex justify-end">
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button variant="ghost" size="icon" className="size-7">
+                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>View Details</DropdownMenuItem>
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
           </TableRow>
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>Total Budget</TableCell>
+            <TableCell colSpan={4}>Total Budget</TableCell>
             <TableCell className="text-right">$39,550</TableCell>
           </TableRow>
         </TableFooter>
