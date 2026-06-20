@@ -605,6 +605,7 @@ export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof Lead
 
 export const EmailScalarFieldEnum = {
   id: 'id',
+  body: 'body',
   status: 'status',
   leadId: 'leadId',
   createdAt: 'createdAt'

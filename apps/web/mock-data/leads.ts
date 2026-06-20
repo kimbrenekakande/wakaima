@@ -1,4 +1,4 @@
-import { LeadStatus, LeadSource } from "@/store/leads-store";
+import { LeadStatus } from "@/store/leads-store";
 
 export interface Lead {
   id: string;
@@ -7,7 +7,6 @@ export interface Lead {
   email: string;
   avatar: string;
   status: LeadStatus;
-  source: LeadSource;
   owner: string;
   ownerInitials: string;
   createdAt: string;
@@ -42,7 +41,6 @@ const owners = [
 ];
 
 const statuses: LeadStatus[] = ["new", "contacted", "qualified", "negotiation", "inactive", "recycled"];
-const sources: LeadSource[] = ["website", "paid_ads", "referral", "social", "email"];
 
 function getDateString(daysAgo: number): string {
   const date = new Date();
@@ -62,7 +60,6 @@ export const leads: Lead[] = Array.from({ length: 50 }, (_, index) => {
   const lastName = lastNames[index % lastNames.length];
   const owner = owners[index % owners.length];
   const status = statuses[index % statuses.length];
-  const source = sources[index % sources.length];
   const daysAgo = index % 30;
 
   return {
@@ -72,7 +69,6 @@ export const leads: Lead[] = Array.from({ length: 50 }, (_, index) => {
     email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@email.com`,
     avatar: `https://api.dicebear.com/9.x/glass/svg?seed=${firstName}${lastName}`,
     status,
-    source,
     owner: owner.name,
     ownerInitials: owner.initials,
     createdAt: getDateString(daysAgo),

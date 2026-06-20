@@ -29,9 +29,8 @@ export async function POST( request: Request) {
         data: {
           name :  lead.name,
           url  :  lead.url,
-          email : lead.email,
-          profile : lead.profile,
-          contacted: false,
+          contact : lead.email,
+          profile : lead.profile
         }
       })
     }

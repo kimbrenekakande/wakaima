@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const leads = await prisma.lead.findMany()
-  const companies = leads.map(({id, name, email, profile}) => ({id, name, email, profile }))
+  const companies = leads.map(({id, name, contact, profile}) => ({id, name, contact, profile }))
 
   const response = await fetch(`${AGENTIC_API_URL}/api/v1/email`, {
     method: "POST",

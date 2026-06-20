@@ -3,8 +3,6 @@
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +11,13 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -20,64 +25,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Invoice01Icon,
   Search01Icon,
-  Settings01Icon,
   MoreHorizontalIcon,
   ArrowRight01Icon,
 } from "@hugeicons/core-free-icons";
-import { useLeadsStore, LeadStatus, LeadSource } from "@/store/leads-store";
+import { useLeadsStore } from "@/store/leads-store";
 import type { Lead } from "@/app/dashboard/page";
-
-const statusConfig: Record<LeadStatus, { label: string; className: string }> = {
-  new: {
-    label: "New Leads",
-    className:
-      "bg-blue-100 text-blue-800 dark:bg-blue-950/30 dark:text-blue-400 border-blue-200 dark:border-blue-800",
-  },
-  contacted: {
-    label: "Contacted",
-    className:
-      "bg-orange-100 text-orange-800 dark:bg-orange-950/30 dark:text-orange-400 border-orange-200 dark:border-orange-800",
-  },
-  qualified: {
-    label: "Qualified",
-    className:
-      "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
-  },
-  negotiation: {
-    label: "Negotiation",
-    className:
-      "bg-amber-100 text-amber-800 dark:bg-amber-950/30 dark:text-amber-400 border-amber-200 dark:border-amber-800",
-  },
-  inactive: {
-    label: "Inactive",
-    className:
-      "bg-gray-100 text-gray-800 dark:bg-gray-950/30 dark:text-gray-400 border-gray-200 dark:border-gray-800",
-  },
-  recycled: {
-    label: "Recycled",
-    className:
-      "bg-pink-100 text-pink-800 dark:bg-pink-950/30 dark:text-pink-400 border-pink-200 dark:border-pink-800",
-  },
-};
-
-const sourceConfig: Record<LeadSource, string> = {
-  website: "Website",
-  paid_ads: "Paid Ads",
-  referral: "Referral",
-  social: "Social",
-  email: "Email",
-};
 
 interface LeadsTableProps {
   leads: Lead[];
@@ -86,41 +42,25 @@ interface LeadsTableProps {
 export function LeadsTable({ leads }: LeadsTableProps) {
   const {
     searchQuery,
-    statusFilter,
-    sourceFilter,
-    ownerFilter,
     currentPage,
     itemsPerPage,
     setSearchQuery,
-    setStatusFilter,
-    setSourceFilter,
-    setOwnerFilter,
     setCurrentPage,
     setItemsPerPage,
     clearFilters,
   } = useLeadsStore();
-
-  const owners = useMemo(() => {
-    return [...new Set(leads.map((lead) => lead.owner))];
-  }, [leads]);
 
   const filteredLeads = useMemo(() => {
     return leads.filter((lead) => {
       const matchesSearch =
         searchQuery === "" ||
         lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lead.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lead.leadId.toLowerCase().includes(searchQuery.toLowerCase());
+        (lead.contact ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        String(lead.id).toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesStatus =
-        statusFilter === "all" || lead.status === statusFilter;
-      const matchesSource =
-        sourceFilter === "all" || lead.source === sourceFilter;
-      const matchesOwner = ownerFilter === "all" || lead.owner === ownerFilter;
-
-      return matchesSearch && matchesStatus && matchesSource && matchesOwner;
+      return matchesSearch;
     });
-  }, [leads, searchQuery, statusFilter, sourceFilter, ownerFilter]);
+  }, [leads, searchQuery]);
 
   const totalPages = Math.ceil(filteredLeads.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -129,11 +69,7 @@ export function LeadsTable({ leads }: LeadsTableProps) {
     startIndex + itemsPerPage
   );
 
-  const hasActiveFilters =
-    searchQuery !== "" ||
-    statusFilter !== "all" ||
-    sourceFilter !== "all" ||
-    ownerFilter !== "all";
+  const hasActiveFilters = searchQuery !== "";
 
   return (
     <div className="bg-card text-card-foreground rounded-xl border">
@@ -162,101 +98,22 @@ export function LeadsTable({ leads }: LeadsTableProps) {
             />
           </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button variant="outline" className="h-9 gap-2">
-                  <HugeiconsIcon icon={Settings01Icon} className="size-4" />
-                  <span>Filter</span>
-                  {hasActiveFilters && (
-                    <Badge
-                      variant="secondary"
-                      className="size-5 p-0 justify-center"
-                    >
-                      !
-                    </Badge>
-                  )}
-                </Button>
-              }
-            />
-            <DropdownMenuContent align="end" className="w-56">
-              <div className="px-2 py-1.5">
-                <p className="text-xs font-medium text-muted-foreground mb-2">
-                  Status
-                </p>
-                <Select
-                  value={statusFilter}
-                  onValueChange={(value) =>
-                    setStatusFilter(value as LeadStatus | "all")
-                  }
-                >
-                  <SelectTrigger className="h-8 w-full">
-                    <SelectValue placeholder="All Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    {Object.entries(statusConfig).map(([key, { label }]) => (
-                      <SelectItem key={key} value={key}>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="px-2 py-1.5">
-                <p className="text-xs font-medium text-muted-foreground mb-2">
-                  Source
-                </p>
-                <Select
-                  value={sourceFilter}
-                  onValueChange={(value) =>
-                    setSourceFilter(value as LeadSource | "all")
-                  }
-                >
-                  <SelectTrigger className="h-8 w-full">
-                    <SelectValue placeholder="All Sources" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Sources</SelectItem>
-                    {Object.entries(sourceConfig).map(([key, label]) => (
-                      <SelectItem key={key} value={key}>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="px-2 py-1.5">
-                <p className="text-xs font-medium text-muted-foreground mb-2">
-                  Owner
-                </p>
-                <Select
-                  value={ownerFilter}
-                  onValueChange={(value) => value && setOwnerFilter(value)}
-                >
-                  <SelectTrigger className="h-8 w-full">
-                    <SelectValue placeholder="All Owners" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Owners</SelectItem>
-                    {owners.map((owner) => (
-                      <SelectItem key={owner} value={owner}>
-                        {owner}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {hasActiveFilters && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={clearFilters}>
-                    Clear all filters
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {hasActiveFilters && (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button variant="outline" className="h-9 gap-2">
+                    <span>Filtered</span>
+                  </Button>
+                }
+              />
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={clearFilters}>
+                  Clear all filters
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           <Button variant="outline" className="h-9 gap-2">
             <HugeiconsIcon icon={Invoice01Icon} className="size-4" />
@@ -271,16 +128,12 @@ export function LeadsTable({ leads }: LeadsTableProps) {
             <TableHeader>
               <TableRow className="bg-muted/50">
                 <TableHead className="w-[120px]">
-                  <div className="flex items-center gap-2">
-                    <Checkbox />
-                    <span>Leads ID</span>
-                  </div>
+                  <span>Leads ID</span>
                 </TableHead>
                 <TableHead className="min-w-[160px]">Lead Name</TableHead>
                 <TableHead className="min-w-[180px] hidden md:table-cell">
-                  Email
+                  Contact
                 </TableHead>
-                <TableHead className="w-[110px]">Status</TableHead>
                 <TableHead className="w-[100px] hidden lg:table-cell">
                   Industry
                 </TableHead>
@@ -291,28 +144,15 @@ export function LeadsTable({ leads }: LeadsTableProps) {
               {paginatedLeads.map((lead) => (
                 <TableRow key={lead.id}>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Checkbox />
-                      <span className="font-medium text-sm">{lead.leadId}</span>
-                    </div>
+                    <span className="font-medium text-sm">{lead.id}</span>
                   </TableCell>
                   <TableCell>
                     <span className="font-medium text-sm">{lead.name}</span>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     <span className="text-sm text-muted-foreground">
-                      {lead.email}
+                      {lead.contact}
                     </span>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={`text-xs font-medium ${
-                        statusConfig[lead.status].className
-                      }`}
-                    >
-                      {statusConfig[lead.status].label}
-                    </Badge>
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">
                     <span className="text-sm text-muted-foreground">
@@ -322,7 +162,7 @@ export function LeadsTable({ leads }: LeadsTableProps) {
                   <TableCell>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        {lead.createdAt}
+                        {lead.createdAt.toLocaleDateString()}
                       </span>
                       <DropdownMenu>
                         <DropdownMenuTrigger

@@ -29,6 +29,7 @@ model Lead {
 
 model Email {
   id        Int         @id @default(autoincrement())
+  body      String
   status    EmailStatus @default(draft)
   lead      Lead?       @relation(fields: [leadId], references: [id])
   leadId    Int?

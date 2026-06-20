@@ -14,6 +14,7 @@ import {
   ComboboxValue,
 } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 import AGENTIC_API_URL from "@/lib/service-url";
 
 interface Country {
@@ -435,10 +436,14 @@ const countries: Country[] = [
 ];
 
 export default function Particle() {
+  const router = useRouter();
+  
   const [industry, setIndustry] = useState("");
   const [country, setCountry] = useState<Country>(countries[0]);
 
   async function handleGenerate() {
+    router.push("/dashboard");
+    
     try {
       console.log({ industry, country: country?.label });
       const response = await fetch("/api/lead/", {
@@ -461,7 +466,7 @@ export default function Particle() {
   }
 
   return(
-    <div className="h-screen w-screen flex justify-center items-center">
+    <div className="h-full w-full flex justify-center items-center">
       <div className="w-1/4 flex flex-col gap-4">
         <Input aria-label="Enter text" placeholder="Enter Industry" type="text" className="bg-background border-border shadow-xs" value={industry} onChange={(e) => setIndustry(e.target.value)} />
         <Combobox value={country} onValueChange={(value) => setCountry(value ?? countries[0])} items={countries}>

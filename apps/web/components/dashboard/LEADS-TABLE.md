@@ -25,7 +25,6 @@ flowchart TD
         D --> E["useLeadsStore()"]
         E --> F["searchQuery"]
         E --> G["statusFilter"]
-        E --> H["sourceFilter"]
         E --> I["ownerFilter"]
         E --> J["currentPage"]
         E --> K["itemsPerPage"]
@@ -37,12 +36,10 @@ flowchart TD
         N --> O["leads.filter()"]
         O --> P["matchesSearch"]
         O --> Q["matchesStatus"]
-        O --> R["matchesSource"]
         O --> S["matchesOwner"]
 
         F --> P
         G --> Q
-        H --> R
         I --> S
 
         N --> T["paginatedLeads"]
@@ -76,7 +73,6 @@ export default async function DashboardPage() {
     email: raw.email ?? "",
     avatar: "",
     status: "new",
-    source: "website",
     owner: "Unassigned",
     ownerInitials: "UN",
     createdAt: "",
@@ -126,14 +122,12 @@ Zustand store. Holds all mutable filter and pagination state. **Not persisted** 
 interface LeadsState {
   searchQuery:    string       // "" initially
   statusFilter:   LeadStatus | "all"  // "all" initially
-  sourceFilter:   LeadSource | "all"  // "all" initially
   ownerFilter:    string              // "all" initially
   dateFilter:     DateFilter          // "this_month" initially
   currentPage:    number              // 1 initially
   itemsPerPage:   number              // 10 initially
   setSearchQuery: (query: string) => void
   setStatusFilter: (filter) => void
-  setSourceFilter: (filter) => void
   setOwnerFilter: (filter) => void
   setDateFilter:   (filter) => void
   setCurrentPage:  (page) => void
@@ -146,7 +140,6 @@ interface LeadsState {
 |---|---|
 | `setSearchQuery` | Resets `currentPage` to 1 |
 | `setStatusFilter` | Resets `currentPage` to 1 |
-| `setSourceFilter` | Resets `currentPage` to 1 |
 | `setOwnerFilter` | Resets `currentPage` to 1 |
 | `setItemsPerPage` | Resets `currentPage` to 1 |
 | `clearFilters` | Resets all filters + page to 1, keeps date as `"this_month"` |
@@ -162,8 +155,7 @@ Client Component. This is where everything comes together.
 | Type | Values | Defined In |
 |---|---|---|
 | `LeadStatus` | `"new" \| "contacted" \| "qualified" \| "negotiation" \| "inactive" \| "recycled"` | `store/leads-store.ts` |
-| `LeadSource` | `"website" \| "paid_ads" \| "referral" \| "social" \| "email"` | `store/leads-store.ts` |
-| `Lead` | `{ id, leadId, name, email, avatar, status, source, owner, ownerInitials, createdAt, createdTimestamp }` | `app/dashboard/page.tsx` |
+| `Lead` | `{ id, leadId, name, email, avatar, status, owner, ownerInitials, createdAt, createdTimestamp }` | `app/dashboard/page.tsx` |
 
 #### Configuration Maps
 
@@ -180,28 +172,16 @@ Maps each status to a display label and Tailwind color classes:
 | `inactive` | Inactive | Gray |
 | `recycled` | Recycled | Pink |
 
-**`sourceConfig`** — `Record<LeadSource, string>`
-
-Maps each source to a display label:
-
-| Source | Label |
-|---|---|
-| `website` | Website |
-| `paid_ads` | Paid Ads |
-| `referral` | Referral |
-| `social` | Social |
-| `email` | Email |
-
 #### Derived State (all `useMemo`)
 
 | Variable | Computation | Dependencies |
 |---|---|---|
 | `owners` | `[...new Set(leads.map(l => l.owner))]` — unique owner names | `[leads]` |
-| `filteredLeads` | Applies all 4 filters to `leads` | `[leads, searchQuery, statusFilter, sourceFilter, ownerFilter]` |
+| `filteredLeads` | Applies all 3 filters to `leads` | `[leads, searchQuery, statusFilter, ownerFilter]` |
 | `totalPages` | `Math.ceil(filteredLeads.length / itemsPerPage)` | derived from `filteredLeads`, `itemsPerPage` |
 | `startIndex` | `(currentPage - 1) * itemsPerPage` | derived from `currentPage`, `itemsPerPage` |
 | `paginatedLeads` | `filteredLeads.slice(startIndex, startIndex + itemsPerPage)` | derived from `filteredLeads`, `startIndex`, `itemsPerPage` |
-| `hasActiveFilters` | `true` if any filter is not default | derived from `searchQuery`, `statusFilter`, `sourceFilter`, `ownerFilter` |
+| `hasActiveFilters` | `true` if any filter is not default | derived from `searchQuery`, `statusFilter`, `ownerFilter` |
 
 #### Filtering Logic (`filteredLeads`)
 
@@ -214,10 +194,9 @@ leads.filter(lead => {
     lead.leadId.toLowerCase().includes(searchQuery.toLowerCase());
 
   const matchesStatus = statusFilter === "all" || lead.status === statusFilter;
-  const matchesSource = sourceFilter === "all" || lead.source === sourceFilter;
   const matchesOwner = ownerFilter === "all" || lead.owner === ownerFilter;
 
-  return matchesSearch && matchesStatus && matchesSource && matchesOwner;
+  return matchesSearch && matchesStatus && matchesOwner;
 })
 ```
 
@@ -248,7 +227,7 @@ Each row has a kebab menu with:
 | Element | Purpose | State Binding |
 |---|---|---|
 | Search `<Input>` | Free-text search across name/email/leadId | `searchQuery` → `setSearchQuery` |
-| Filter button + dropdown | Status, Source, Owner selects | `statusFilter`/`sourceFilter`/`ownerFilter` → setters |
+| Filter button + dropdown | Status, Owner selects | `statusFilter`/`ownerFilter` → setters |
 | "Clear all filters" | Only visible when `hasActiveFilters` | Calls `clearFilters()` |
 | Import button | Placeholder | — |
 
