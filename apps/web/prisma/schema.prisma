@@ -18,10 +18,25 @@ model Lead {
   id        Int      @id @default(autoincrement())
   name      String
   url       String?
-  email     String?  @unique
+  contact   String?  @unique
   profile   String?
   draft     String?
-  contacted Boolean  @default(false)
+  emails    Email[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+
+model Email {
+  id        Int         @id @default(autoincrement())
+  status    EmailStatus @default(draft)
+  lead      Lead?       @relation(fields: [leadId], references: [id])
+  leadId    Int?
+  createdAt DateTime    @default(now())
+}
+
+enum EmailStatus {
+  draft
+  sent
+  failed
 }

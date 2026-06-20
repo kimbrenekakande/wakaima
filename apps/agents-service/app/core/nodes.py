@@ -23,7 +23,7 @@ async def search_node(state: leadsSearchState):
 
     for r in results.results:
         print(r)
-        state.leads.append(SearchResult(name=r.title, url=r.url, profile=r.text))
+        state.leads.append(SearchResult(id=None, name=r.title, url=r.url, profile=r.text))
 
     return state
 

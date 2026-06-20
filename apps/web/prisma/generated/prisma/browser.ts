@@ -22,3 +22,8 @@ export * from './enums';
  * 
  */
 export type Lead = Prisma.LeadModel
+/**
+ * Model Email
+ * 
+ */
+export type Email = Prisma.EmailModel

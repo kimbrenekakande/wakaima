@@ -9,7 +9,10 @@
 * 🟢 You can import this file directly.
 */
 
+export const EmailStatus = {
+  draft: 'draft',
+  sent: 'sent',
+  failed: 'failed'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type EmailStatus = (typeof EmailStatus)[keyof typeof EmailStatus]
