@@ -28,7 +28,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import {
   DashboardSquare01Icon,
   ChartLineData01Icon,
-  Notification01Icon,
+  Mail01Icon,
   Calendar01Icon,
   Task01Icon,
   UserGroupIcon,
@@ -58,15 +58,10 @@ const menuItems = [
   },
   {
     title: "Emails",
-    icon: Notification01Icon,
+    icon: Mail01Icon,
     href: "/dashboard/emails",
     matchPath: (pathname: string) => pathname.startsWith("/dashboard/emails"),
-  },
-  {
-    title: "Contacts",
-    icon: UserGroupIcon,
-    href: "#",
-  },
+  }
 ];
 
 export function DashboardSidebar({

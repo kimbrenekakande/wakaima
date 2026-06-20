@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useCallback, useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,8 +33,46 @@ import {
   Delete01Icon,
 } from "@hugeicons/core-free-icons";
 
+interface Email {
+  id: number;
+  body: string;
+  status: string;
+  leadId: number | null;
+  lead: { name: string; contact: string | null } | null;
+  createdAt: string;
+}
+
 export default function EmailsPage() {
-  
+  const [emails, setEmails] = useState<Email[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/emails")
+      .then((res) => res.json())
+      .then(setEmails)
+      .catch((err) => setError(err.message));
+  }, []);
+
+  const generateDrafts = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/email", { method: "GET" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || `Server error: ${res.status}`);
+      }
+      const emailsRes = await fetch("/api/emails");
+      const updated = await emailsRes.json();
+      setEmails(updated);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to generate drafts");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return (
     <main className="flex-1 overflow-auto p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 bg-background w-full">
       {/* Header */}
@@ -74,12 +113,22 @@ export default function EmailsPage() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button className="gap-2 bg-foreground text-background hover:bg-foreground/90 cursor-pointer">
+          <Button
+            onClick={generateDrafts}
+            disabled={loading}
+            className="gap-2 bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
+          >
             <HugeiconsIcon icon={Add01Icon} className="size-4" />
-            <span>New Campaign</span>
+            <span>{loading ? "Generating..." : "New Campaign"}</span>
           </Button>
         </div>
       </div>
+
+      {error && (
+        <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md border border-destructive/20">
+          {error}
+        </div>
+      )}
 
       {/* Filter bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -153,238 +202,68 @@ export default function EmailsPage() {
 
       {/* Table */}
       <Table>
-        <TableCaption>A list of current projects.</TableCaption>
+        <TableCaption>Current Lead Email Queue.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>Project</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Team</TableHead>
-            <TableHead className="text-right">Budget</TableHead>
+            <TableHead className="text-right">Lead</TableHead>
+            <TableHead className="text-right">Contact</TableHead>
+            <TableHead className="text-right">Created</TableHead>
             <TableHead className="w-10 text-right" />
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Mail01Icon} className="size-5 text-muted-foreground shrink-0" />
-                <span className="font-medium">Website Redesign</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge variant="outline">
-                <span
-                  aria-hidden="true"
-                  className="size-1.5 rounded-full bg-emerald-500"
-                />
-                Paid
-              </Badge>
-            </TableCell>
-            <TableCell>Frontend Team</TableCell>
-            <TableCell className="text-right">$12,500</TableCell>
-            <TableCell className="flex justify-end">
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button variant="ghost" size="icon" className="size-7">
-                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
-                    </Button>
-                  }
-                />
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>View Details</DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Mail01Icon} className="size-5 text-muted-foreground shrink-0" />
-                <span className="font-medium">Mobile App</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge variant="outline">
-                <span
-                  aria-hidden="true"
-                  className="size-1.5 rounded-full bg-muted-foreground/64"
-                />
-                Unpaid
-              </Badge>
-            </TableCell>
-            <TableCell>Mobile Team</TableCell>
-            <TableCell className="text-right">$8,750</TableCell>
-            <TableCell className="flex justify-end">
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button variant="ghost" size="icon" className="size-7">
-                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
-                    </Button>
-                  }
-                />
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>View Details</DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Mail01Icon} className="size-5 text-muted-foreground shrink-0" />
-                <span className="font-medium">API Integration</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge variant="outline">
-                <span
-                  aria-hidden="true"
-                  className="size-1.5 rounded-full bg-amber-500"
-                />
-                Pending
-              </Badge>
-            </TableCell>
-            <TableCell>Backend Team</TableCell>
-            <TableCell className="text-right">$5,200</TableCell>
-            <TableCell className="flex justify-end">
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button variant="ghost" size="icon" className="size-7">
-                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
-                    </Button>
-                  }
-                />
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>View Details</DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Mail01Icon} className="size-5 text-muted-foreground shrink-0" />
-                <span className="font-medium">Database Migration</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge variant="outline">
-                <span
-                  aria-hidden="true"
-                  className="size-1.5 rounded-full bg-emerald-500"
-                />
-                Paid
-              </Badge>
-            </TableCell>
-            <TableCell>DevOps Team</TableCell>
-            <TableCell className="text-right">$3,800</TableCell>
-            <TableCell className="flex justify-end">
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button variant="ghost" size="icon" className="size-7">
-                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
-                    </Button>
-                  }
-                />
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>View Details</DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Mail01Icon} className="size-5 text-muted-foreground shrink-0" />
-                <span className="font-medium">User Dashboard</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge variant="outline">
-                <span
-                  aria-hidden="true"
-                  className="size-1.5 rounded-full bg-emerald-500"
-                />
-                Paid
-              </Badge>
-            </TableCell>
-            <TableCell>UX Team</TableCell>
-            <TableCell className="text-right">$7,200</TableCell>
-            <TableCell className="flex justify-end">
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button variant="ghost" size="icon" className="size-7">
-                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
-                    </Button>
-                  }
-                />
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>View Details</DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Mail01Icon} className="size-5 text-muted-foreground shrink-0" />
-                <span className="font-medium">Security Audit</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge variant="outline">
-                <span
-                  aria-hidden="true"
-                  className="size-1.5 rounded-full bg-red-500"
-                />
-                Failed
-              </Badge>
-            </TableCell>
-            <TableCell>Security Team</TableCell>
-            <TableCell className="text-right">$2,100</TableCell>
-            <TableCell className="flex justify-end">
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button variant="ghost" size="icon" className="size-7">
-                      <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
-                    </Button>
-                  }
-                />
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>View Details</DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
+          {emails.map((email) => (
+            <TableRow key={email.id}>
+              <TableCell>
+                <div className="flex items-center gap-2 max-w-xs">
+                  <HugeiconsIcon icon={Mail01Icon} className="size-5 text-muted-foreground shrink-0" />
+                  <span className="font-medium truncate min-w-0">{email.body}</span>
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge variant="outline">
+                  <span
+                    aria-hidden="true"
+                    className={`size-1.5 rounded-full ${
+                      email.status === "sent"
+                        ? "bg-emerald-500"
+                        : email.status === "failed"
+                          ? "bg-red-500"
+                          : "bg-muted-foreground/64"
+                    }`}
+                  />
+                  {email.status}
+                </Badge>
+              </TableCell>
+              <TableCell className="text-right">{email.lead?.name ?? "-"}</TableCell>
+              <TableCell className="text-right">{email.lead?.contact ?? "-"}</TableCell>
+              <TableCell className="text-right">{new Date(email.createdAt).toLocaleDateString()}</TableCell>
+              <TableCell className="flex justify-end">
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    render={
+                      <Button variant="ghost" size="icon" className="size-7">
+                        <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
+                      </Button>
+                    }
+                  />
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>View Details</DropdownMenuItem>
+                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={4}>Total Budget</TableCell>
-            <TableCell className="text-right">$39,550</TableCell>
+            {/*<TableCell colSpan={4}>Total Emails</TableCell>
+            <TableCell className="text-right">{emails.length}</TableCell>*/}
           </TableRow>
         </TableFooter>
       </Table>

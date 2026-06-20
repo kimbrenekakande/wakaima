@@ -125,6 +125,7 @@ export function LeadsContent({ leads }: LeadsContentProps) {
               <TableHead className="hidden md:table-cell">URL</TableHead>
               <TableHead>Contact</TableHead>
               <TableHead>Emails</TableHead>
+              <TableHead className="hidden lg:table-cell">Created</TableHead>
               <TableHead className="w-10" />
             </TableRow>
           </TableHeader>
@@ -132,7 +133,7 @@ export function LeadsContent({ leads }: LeadsContentProps) {
             {filteredLeads.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={6}
                   className="text-center text-muted-foreground py-8"
                 >
                   No leads found
@@ -160,6 +161,11 @@ export function LeadsContent({ leads }: LeadsContentProps) {
                   <TableCell>
                     <span className="text-sm text-muted-foreground">
                       {lead.emails.length}
+                    </span>
+                  </TableCell>
+                  <TableCell className="hidden lg:table-cell">
+                    <span className="text-sm text-muted-foreground">
+                      {lead.createdAt.toLocaleDateString()}
                     </span>
                   </TableCell>
                   <TableCell>

@@ -1,6 +1,5 @@
 import { prisma } from "./lib/prisma";
 
-const leads = await prisma.lead.findMany()
-const cleaned = leads.map(({ name, email, profile }) => ({ name, email, profile }))
+const leads = await prisma.email.findMany()
 
 console.log(leads)
