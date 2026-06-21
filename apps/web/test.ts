@@ -1,5 +1,7 @@
 import { prisma } from "./lib/prisma";
 
-const leads = await prisma.email.findMany()
+const draft = await prisma.email.findUnique({
+  where: { id: 6 },
+});
 
-console.log(leads)
+console.log(draft)

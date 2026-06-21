@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -217,10 +218,12 @@ export default function EmailsPage() {
           {emails.map((email) => (
             <TableRow key={email.id}>
               <TableCell>
-                <div className="flex items-center gap-2 max-w-xs">
-                  <HugeiconsIcon icon={Mail01Icon} className="size-5 text-muted-foreground shrink-0" />
-                  <span className="font-medium truncate min-w-0">{email.body}</span>
-                </div>
+                <Link href={`/dashboard/emails/editor/${email.id}`}>
+                  <div className="flex items-center gap-2 max-w-xs">
+                    <HugeiconsIcon icon={Mail01Icon} className="size-5 text-muted-foreground shrink-0" />
+                    <span className="font-medium truncate min-w-0">{email.body}</span>
+                  </div>
+                </Link>
               </TableCell>
               <TableCell>
                 <Badge variant="outline">
