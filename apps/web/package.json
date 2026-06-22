@@ -19,6 +19,7 @@
     "@prisma/client": "^7.8.0",
     "@react-email/editor": "^1.5.7",
     "@tanstack/react-table": "^8.21.3",
+    "@tiptap/react": "^3.27.1",
     "ajv": "^8.18.0",
     "better-auth": "^1.6.20",
     "better-sqlite3": "^12.11.1",
