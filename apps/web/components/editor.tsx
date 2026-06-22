@@ -21,8 +21,8 @@ const customTheme = extendTheme("basic", {
 }
 )
 
-const Editor = ({ draft }: { draft: string }) => {
-  return <EmailEditor content={draft} theme={customTheme}/>
+const Editor = ({ content }: { content : string }) => {
+  return <EmailEditor content={content} theme={customTheme}/>
 }
 
 export default Editor;

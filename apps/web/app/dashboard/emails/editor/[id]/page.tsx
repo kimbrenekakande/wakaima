@@ -11,12 +11,10 @@ export default async function EditorPage({ params }: Props) {
   const draft = await prisma.email.findUnique({
     where: { id: emailId },
   });
-
-  console.log(draft)
   
   return (
     <div className="h-full w-full">
-      <Editor draft={ draft?.body || ""} />
+      <Editor content={ draft?.body || ""} />
     </div>
   );
 }

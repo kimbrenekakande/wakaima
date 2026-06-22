@@ -1,5 +1,5 @@
 import os
-
+import markdown
 from core.models import groq
 from core.schemas import SearchResult, emailReq, leadsSearchState
 from crawl4ai import AsyncWebCrawler, CrawlerRunConfig
@@ -60,10 +60,10 @@ async def draft_node(state: emailReq):
     for company in state.companies:
         response = groq.invoke(
             input=f"""
-            write a mock lead generation email to the company {company.name} from a computer retail and repair company called Eagle Info Solutions.
+            write a markdown format lead generation email in react email syntax html to the company {company.name} from a computer retail and repair company called Eagle Info Solutions.
             the email should be custom tailored based of the company's profile in this case {company.profile}
             dont add thing but just the letter , dont communicate. make sure the response is plain text no layout.
             """
         )
-        company.draft = response.text
+        company.draft = ( markdown.markdown(response.text) )
     return state
