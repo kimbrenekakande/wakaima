@@ -28,15 +28,12 @@ import {
   Invoice01Icon,
   OfficeIcon,
 } from "@hugeicons/core-free-icons";
-import type { Lead } from "@/app/dashboard/page";
+import type { LeadsProps } from "@/lib/types";
 
 type SortBy = "newest" | "oldest" | "name_asc" | "name_desc";
 
-interface DashboardContentProps {
-  leads: Lead[];
-}
 
-export function DashboardContent({ leads }: DashboardContentProps) {
+export function DashboardContent({ leads }: LeadsProps) {
   const [sortBy, setSortBy] = useState<SortBy>("newest");
 
   // Sort
@@ -68,10 +65,10 @@ export function DashboardContent({ leads }: DashboardContentProps) {
   return (
     <main className="flex-1 overflow-auto p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 bg-background w-full">
       <FilterSection />
-      <StatsCards />
+      <StatsCards leads={leads} />
       <div className="flex flex-col xl:flex-row gap-4 sm:gap-6">
-        <MonthlyLeadGrowthChart />
-        <LeadsByStatusChart />
+        <MonthlyLeadGrowthChart leads={leads} />
+        <LeadsByStatusChart leads={leads} />
       </div>
 
       {/* Recent Leads Table */}

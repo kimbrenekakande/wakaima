@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -29,49 +29,7 @@ import {
   Bar,
 } from "recharts";
 import { useTheme } from "next-themes";
-
-const fullYearData = [
-  { month: "Jan", week: 1, leads: 210 },
-  { month: "", week: 2, leads: 220 },
-  { month: "", week: 3, leads: 310 },
-  { month: "", week: 4, leads: 420 },
-  { month: "Feb", week: 5, leads: 340 },
-  { month: "", week: 6, leads: 330 },
-  { month: "", week: 7, leads: 280 },
-  { month: "", week: 8, leads: 260 },
-  { month: "Mar", week: 9, leads: 210 },
-  { month: "", week: 10, leads: 230 },
-  { month: "", week: 11, leads: 270 },
-  { month: "", week: 12, leads: 290 },
-  { month: "Apr", week: 13, leads: 340 },
-  { month: "", week: 14, leads: 360 },
-  { month: "", week: 15, leads: 380 },
-  { month: "", week: 16, leads: 350 },
-  { month: "May", week: 17, leads: 370 },
-  { month: "", week: 18, leads: 390 },
-  { month: "", week: 19, leads: 400 },
-  { month: "", week: 20, leads: 380 },
-  { month: "Jun", week: 21, leads: 410 },
-  { month: "", week: 22, leads: 430 },
-  { month: "", week: 23, leads: 400 },
-  { month: "", week: 24, leads: 420 },
-  { month: "Jul", week: 25, leads: 390 },
-  { month: "", week: 26, leads: 380 },
-  { month: "", week: 27, leads: 400 },
-  { month: "", week: 28, leads: 390 },
-  { month: "Aug", week: 29, leads: 290 },
-  { month: "", week: 30, leads: 310 },
-  { month: "", week: 31, leads: 380 },
-  { month: "", week: 32, leads: 400 },
-  { month: "Sep", week: 33, leads: 370 },
-  { month: "", week: 34, leads: 390 },
-  { month: "", week: 35, leads: 360 },
-  { month: "", week: 36, leads: 380 },
-  { month: "Oct", week: 37, leads: 370 },
-  { month: "", week: 38, leads: 390 },
-  { month: "", week: 39, leads: 380 },
-  { month: "", week: 40, leads: 400 },
-];
+import type { LeadsProps } from "@/lib/types";
 
 type ChartType = "line" | "area" | "bar";
 type Period = "3m" | "6m" | "12m";
@@ -80,7 +38,7 @@ interface CustomTooltipProps {
   active?: boolean;
   payload?: Array<{
     value: number;
-    payload: { month: string; week: number; leads: number };
+    payload: { month: string; leads: number };
   }>;
 }
 
@@ -88,23 +46,16 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep
 
 function CustomTooltip({ active, payload }: CustomTooltipProps) {
   if (active && payload && payload.length) {
-    const data = payload[0];
-    const weekIndex = data.payload.week - 1;
-    const monthIndex = Math.floor(weekIndex / 4);
-    const monthName = monthNames[monthIndex] || "Apr";
-
-    const prevIndex = fullYearData.findIndex(d => d.week === data.payload.week) - 1;
-    const prevValue = prevIndex >= 0 ? fullYearData[prevIndex].leads : data.value;
-    const change = prevValue > 0 ? ((data.value - prevValue) / prevValue * 100).toFixed(1) : 0;
+    const item = payload[0];
 
     return (
       <div className="bg-card border rounded-md p-2">
-        <p className="text-xs text-muted-foreground">{monthName}, 2025</p>
+        <p className="text-xs text-muted-foreground">{item.payload.month}, 2025</p>
         <div className="flex items-center gap-2 mt-1">
-          <span className="font-semibold text-sm">{data.value}</span>
+          <span className="font-semibold text-sm">{item.value}</span>
           <span className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
             <HugeiconsIcon icon={ChartLineData01Icon} className="size-3" />
-            {change}%
+            {item.value} leads
           </span>
         </div>
       </div>
@@ -113,7 +64,7 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
   return null;
 }
 
-export function MonthlyLeadGrowthChart() {
+export function MonthlyLeadGrowthChart({ leads }: LeadsProps) {
   const { theme } = useTheme();
   const [chartType, setChartType] = useState<ChartType>("area");
   const [period, setPeriod] = useState<Period>("12m");
@@ -124,19 +75,47 @@ export function MonthlyLeadGrowthChart() {
   const gridColor = theme === "dark" ? "#27272a" : "#e2e4e9";
   const lineColor = "#cc6600";
 
+  // Build real chart data from leads grouped by month
+  const chartData = useMemo(() => {
+    const now = new Date();
+    const months = [];
+
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const count = leads.filter((lead) => {
+        const created = new Date(lead.createdAt);
+        return (
+          created.getMonth() === d.getMonth() &&
+          created.getFullYear() === d.getFullYear()
+        );
+      }).length;
+
+      months.push({
+        month: monthNames[d.getMonth()],
+        leads: count,
+      });
+    }
+
+    return months;
+  }, [leads]);
+
   const getDataForPeriod = () => {
     switch (period) {
       case "3m":
-        return fullYearData.slice(-12);
+        return chartData.slice(-3);
       case "6m":
-        return fullYearData.slice(-24);
+        return chartData.slice(-6);
       case "12m":
       default:
-        return fullYearData;
+        return chartData;
     }
   };
 
   const data = getDataForPeriod();
+
+  // Dynamic Y-axis max based on data
+  const maxLeads = Math.max(...data.map((d) => d.leads), 1);
+  const yMax = Math.ceil(maxLeads / 100) * 100 + 100;
 
   const resetToDefault = () => {
     setChartType("area");
@@ -223,14 +202,13 @@ export function MonthlyLeadGrowthChart() {
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: axisColor }}
-                  interval="preserveStartEnd"
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 10, fill: axisColor }}
-                  domain={[0, 500]}
-                  ticks={[0, 100, 200, 300, 400, 500]}
+                  domain={[0, yMax]}
+                  allowDecimals={false}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <defs>
@@ -249,14 +227,13 @@ export function MonthlyLeadGrowthChart() {
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: axisColor }}
-                  interval="preserveStartEnd"
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 10, fill: axisColor }}
-                  domain={[0, 500]}
-                  ticks={[0, 100, 200, 300, 400, 500]}
+                  domain={[0, yMax]}
+                  allowDecimals={false}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <defs>
@@ -283,14 +260,13 @@ export function MonthlyLeadGrowthChart() {
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: axisColor }}
-                  interval="preserveStartEnd"
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 10, fill: axisColor }}
-                  domain={[0, 500]}
-                  ticks={[0, 100, 200, 300, 400, 500]}
+                  domain={[0, yMax]}
+                  allowDecimals={false}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Line

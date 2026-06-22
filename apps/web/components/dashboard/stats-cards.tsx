@@ -2,40 +2,42 @@
 
 import { leadStats } from "@/mock-data/leads";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Invoice01Icon, UserGroupIcon, Task01Icon, Notification01Icon } from "@hugeicons/core-free-icons";
+import { Invoice01Icon, UserGroupIcon, Task01Icon, Notification01Icon, Mail01Icon } from "@hugeicons/core-free-icons";
+import { LeadsProps } from "@/lib/types";
 
-const stats = [
-  {
-    title: "Total Leads This Month",
-    value: leadStats.totalLeads,
-    change: leadStats.totalLeadsChange,
-    changeValue: leadStats.totalLeadsChangeValue,
-    icon: Invoice01Icon,
-  },
-  {
-    title: "Contacted Leads",
-    value: leadStats.contactedLeads,
-    change: leadStats.contactedLeadsChange,
-    changeValue: leadStats.contactedLeadsChangeValue,
-    icon: UserGroupIcon,
-  },
-  {
-    title: "Qualified Leads",
-    value: leadStats.qualifiedLeads,
-    change: leadStats.qualifiedLeadsChange,
-    changeValue: leadStats.qualifiedLeadsChangeValue,
-    icon: Task01Icon,
-  },
-  {
-    title: "Hot Leads",
-    value: leadStats.hotLeads,
-    change: leadStats.hotLeadsChange,
-    changeValue: leadStats.hotLeadsChangeValue,
-    icon: Notification01Icon,
-  },
-];
 
-export function StatsCards() {
+export function StatsCards({ leads }: LeadsProps) {
+  const stats = [
+    {
+      title: "Total Leads",
+      value: leads.length,
+      change: leadStats.totalLeadsChange,
+      changeValue: leadStats.totalLeadsChangeValue,
+      icon: Invoice01Icon,
+    },
+    {
+      title: "Contacted Leads",
+      value: leads.flatMap((lead) => lead.emails).filter((email) => email.status === "sent").length,
+      change: leadStats.contactedLeadsChange,
+      changeValue: leadStats.contactedLeadsChangeValue,
+      icon: UserGroupIcon,
+    },
+    {
+      title: "Delivered Emails",
+      value: leads.flatMap((lead) => lead.emails).filter((email) => email.status === "sent").length,
+      change: leadStats.qualifiedLeadsChange,
+      changeValue: leadStats.qualifiedLeadsChangeValue,
+      icon: Mail01Icon,
+    },
+    {
+      title: "Pending Drafts",
+      value: leads.flatMap((lead) => lead.emails).filter((email) => email.status === "draft").length,
+      change: leadStats.hotLeadsChange,
+      changeValue: leadStats.hotLeadsChangeValue,
+      icon: Notification01Icon,
+    },
+  ];
+
   return (
     <div className="border rounded-xl">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y divide-x-0 lg:divide-x sm:divide-y-0 divide-border">

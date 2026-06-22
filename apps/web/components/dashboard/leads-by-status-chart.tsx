@@ -20,8 +20,8 @@ import {
   ArrowDown01Icon,
   Settings01Icon,
 } from "@hugeicons/core-free-icons";
+import type { LeadsProps } from "@/lib/types";
 
-type Period = "month" | "quarter" | "6months" | "year";
 type SortBy = "value_desc" | "value_asc" | "name_asc" | "name_desc";
 
 interface StatusData {
@@ -30,94 +30,39 @@ interface StatusData {
   color: string;
 }
 
-const periodData: Record<
-  Period,
-  {
-    total: number;
-    totalChange: number;
-    totalChangeValue: number;
-    data: StatusData[];
-  }
-> = {
-  month: {
-    total: 3612,
-    totalChange: 20,
-    totalChangeValue: 244,
-    data: [
-      { name: "New Leads", value: 1420, color: "#ff9933" },
-      { name: "Contacted", value: 980, color: "#e68a2e" },
-      { name: "Qualified", value: 620, color: "#ffb366" },
-      { name: "Negotiation", value: 280, color: "#cc6600" },
-      { name: "Inactive", value: 190, color: "#ffaa55" },
-      { name: "Recycled", value: 122, color: "#a64d00" },
-    ],
-  },
-  quarter: {
-    total: 9840,
-    totalChange: 15,
-    totalChangeValue: 620,
-    data: [
-      { name: "New Leads", value: 3800, color: "#ff9933" },
-      { name: "Contacted", value: 2650, color: "#e68a2e" },
-      { name: "Qualified", value: 1720, color: "#ffb366" },
-      { name: "Negotiation", value: 780, color: "#cc6600" },
-      { name: "Inactive", value: 520, color: "#ffaa55" },
-      { name: "Recycled", value: 370, color: "#a64d00" },
-    ],
-  },
-  "6months": {
-    total: 18650,
-    totalChange: 18,
-    totalChangeValue: 1240,
-    data: [
-      { name: "New Leads", value: 7200, color: "#ff9933" },
-      { name: "Contacted", value: 5100, color: "#e68a2e" },
-      { name: "Qualified", value: 3250, color: "#ffb366" },
-      { name: "Negotiation", value: 1500, color: "#cc6600" },
-      { name: "Inactive", value: 980, color: "#ffaa55" },
-      { name: "Recycled", value: 620, color: "#a64d00" },
-    ],
-  },
-  year: {
-    total: 42300,
-    totalChange: 25,
-    totalChangeValue: 3200,
-    data: [
-      { name: "New Leads", value: 16500, color: "#ff9933" },
-      { name: "Contacted", value: 11200, color: "#e68a2e" },
-      { name: "Qualified", value: 7400, color: "#ffb366" },
-      { name: "Negotiation", value: 3800, color: "#cc6600" },
-      { name: "Inactive", value: 2100, color: "#ffaa55" },
-      { name: "Recycled", value: 1300, color: "#a64d00" },
-    ],
-  },
+const statusColors: Record<string, string> = {
+  draft: "#ff9933",
+  sent: "#cc6600",
+  failed: "#a64d00",
 };
 
-const periodLabels: Record<Period, string> = {
-  month: "This Month",
-  quarter: "Last 3 Months",
-  "6months": "Last 6 Months",
-  year: "Last 12 Months",
-};
-
-export function LeadsByStatusChart() {
-  const [period, setPeriod] = useState<Period>("month");
+export function LeadsByStatusChart({ leads }: LeadsProps) {
   const [sortBy, setSortBy] = useState<SortBy>("value_desc");
   const [visibleStatuses, setVisibleStatuses] = useState<
     Record<string, boolean>
   >({
-    "New Leads": true,
-    Contacted: true,
-    Qualified: true,
-    Negotiation: true,
-    Inactive: true,
-    Recycled: true,
+    Draft: true,
+    Sent: true,
+    Failed: true,
   });
 
-  const currentData = periodData[period];
+  // Count emails grouped by status
+  const statusData: StatusData[] = useMemo(() => {
+    const allEmails = leads.flatMap((l) => l.emails);
+
+    const draft = allEmails.filter((e) => e.status === "draft").length;
+    const sent = allEmails.filter((e) => e.status === "sent").length;
+    const failed = allEmails.filter((e) => e.status === "failed").length;
+
+    return [
+      { name: "Draft", value: draft, color: statusColors.draft },
+      { name: "Sent", value: sent, color: statusColors.sent },
+      { name: "Failed", value: failed, color: statusColors.failed },
+    ];
+  }, [leads]);
 
   const filteredAndSortedData = useMemo(() => {
-    let data = currentData.data.filter((item) => visibleStatuses[item.name]);
+    let data = statusData.filter((item) => visibleStatuses[item.name]);
 
     switch (sortBy) {
       case "value_desc":
@@ -135,15 +80,15 @@ export function LeadsByStatusChart() {
     }
 
     return data;
-  }, [currentData.data, sortBy, visibleStatuses]);
+  }, [statusData, sortBy, visibleStatuses]);
 
   const maxValue = useMemo(() => {
     return Math.max(...filteredAndSortedData.map((d) => d.value), 1);
   }, [filteredAndSortedData]);
 
-  const visibleTotal = useMemo(() => {
-    return filteredAndSortedData.reduce((sum, item) => sum + item.value, 0);
-  }, [filteredAndSortedData]);
+  const totalEmails = useMemo(() => {
+    return leads.flatMap((l) => l.emails).length;
+  }, [leads]);
 
   const toggleStatus = (statusName: string) => {
     setVisibleStatuses((prev) => ({
@@ -153,15 +98,11 @@ export function LeadsByStatusChart() {
   };
 
   const resetToDefault = () => {
-    setPeriod("month");
     setSortBy("value_desc");
     setVisibleStatuses({
-      "New Leads": true,
-      Contacted: true,
-      Qualified: true,
-      Negotiation: true,
-      Inactive: true,
-      Recycled: true,
+      Draft: true,
+      Sent: true,
+      Failed: true,
     });
   };
 
@@ -172,7 +113,7 @@ export function LeadsByStatusChart() {
           <Button variant="outline" size="icon" className="size-8">
             <HugeiconsIcon icon={Notification01Icon} className="size-4 text-muted-foreground" />
           </Button>
-          <h3 className="font-medium text-sm sm:text-base">Leads by Status</h3>
+          <h3 className="font-medium text-sm sm:text-base">Emails by Status</h3>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -183,19 +124,6 @@ export function LeadsByStatusChart() {
             }
           />
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <HugeiconsIcon icon={Settings01Icon} className="size-4 mr-2" />
-                Time Period
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                {(Object.keys(periodLabels) as Period[]).map((p) => (
-                  <DropdownMenuItem key={p} onClick={() => setPeriod(p)}>
-                    {periodLabels[p]} {period === p && "✓"}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
                 <HugeiconsIcon icon={ArrowDown01Icon} className="size-4 mr-2" />
@@ -227,7 +155,7 @@ export function LeadsByStatusChart() {
                 Show Statuses
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
-                {currentData.data.map((item) => (
+                {statusData.map((item) => (
                   <DropdownMenuCheckboxItem
                     key={item.name}
                     checked={visibleStatuses[item.name]}
@@ -252,14 +180,11 @@ export function LeadsByStatusChart() {
       <div className="px-5 pb-5 space-y-6 sm:space-y-8">
         <div className="flex items-end gap-2">
           <span className="text-2xl sm:text-[28px] font-semibold tracking-tight">
-            {visibleTotal.toLocaleString()}
+            {totalEmails.toLocaleString()}
           </span>
           <div className="flex items-center gap-2 text-xs sm:text-sm pb-1">
-            <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-              +{currentData.totalChange}%({currentData.totalChangeValue})
-            </span>
             <span className="text-muted-foreground hidden sm:inline">
-              vs Last Months
+              total emails
             </span>
           </div>
         </div>

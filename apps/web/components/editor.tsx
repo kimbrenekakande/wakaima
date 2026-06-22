@@ -10,8 +10,8 @@ const customTheme = extendTheme("basic", {
     backgroundColor: "transparent",
     display: "block",
     minWidth: "30vw",
-    minHeight : "80vh"
-
+    minHeight: "80vh",
+    padding: "2rem",
   },
   container: {
     backgroundColor: "transparent",
@@ -22,7 +22,11 @@ const customTheme = extendTheme("basic", {
 )
 
 const Editor = ({ content }: { content : string }) => {
-  return <EmailEditor content={content} theme={customTheme}/>
+  return (
+    <div className="flex items-center justify-center w-full h-full">
+      <EmailEditor content={content} theme={customTheme} />
+    </div>
+  )
 }
 
 export default Editor;

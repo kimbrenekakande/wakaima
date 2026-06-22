@@ -11,7 +11,7 @@ export default async function EditorPage({ params }: Props) {
   const draft = await prisma.email.findUnique({
     where: { id: emailId },
   });
-  
+
   return (
     <div className="h-full w-full">
       <Editor content={ draft?.body || ""} />

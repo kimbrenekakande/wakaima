@@ -54,7 +54,7 @@ export function DashboardHeader() {
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <Button variant="outline" size="icon" className="relative size-9">
+              <Button variant="outline" size="icon" className="relative size-9 hidden">
                 <HugeiconsIcon icon={Notification01Icon} />
                 <span className="absolute -top-0.5 -right-0.5 size-2.5 bg-rose-500 rounded-full border-2 border-card" />
               </Button>
@@ -154,7 +154,7 @@ export function DashboardHeader() {
             <HugeiconsIcon icon={Search01Icon} className="size-4 mr-2" />
             Search
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem className="hidden">
             <HugeiconsIcon icon={Notification01Icon} className="size-4 mr-2" />
             Notifications
           </DropdownMenuItem>
