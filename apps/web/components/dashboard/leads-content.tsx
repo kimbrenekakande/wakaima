@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowDown01Icon,
@@ -143,10 +144,10 @@ export function LeadsContent({ leads }: LeadsContentProps) {
               filteredLeads.map((lead) => (
                 <TableRow key={lead.id}>
                   <TableCell>
-                    <div className="flex items-center gap-2">
+                    <Link href={`/dashboard/leads/details/${lead.id}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                       <HugeiconsIcon icon={OfficeIcon} className="size-5 text-muted-foreground shrink-0" />
                       <span className="font-medium text-sm">{lead.name}</span>
-                    </div>
+                    </Link>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     <span className="text-sm text-muted-foreground">
