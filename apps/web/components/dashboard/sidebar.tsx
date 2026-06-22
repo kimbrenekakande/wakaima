@@ -42,6 +42,8 @@ import {
   Coins01Icon,
   Globe02Icon,
 } from "@hugeicons/core-free-icons";
+import { useSession, signOut } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 const menuItems = [
   {
@@ -68,6 +70,24 @@ export function DashboardSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { data: session, isPending } = useSession();
+
+  const user = session?.user;
+  const initials = user?.name
+    ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
+    : "??";
+
+  const handleLogout = async () => {
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login");
+          router.refresh();
+        },
+      },
+    });
+  };
 
   return (
     <Sidebar collapsible="offExamples" className="lg:border-r-0!" {...props}>
@@ -148,13 +168,15 @@ export function DashboardSidebar({
             render={
               <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg cursor-pointer hover:bg-accent transition-colors">
                 <Avatar className="size-7 sm:size-8">
-                  <AvatarImage src="https://api.dicebear.com/9.x/glass/svg?seed=LN" />
-                  <AvatarFallback className="text-xs">JC</AvatarFallback>
+                  <AvatarImage src={user?.image ?? undefined} />
+                  <AvatarFallback className="text-xs">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-xs sm:text-sm">LN</p>
+                  <p className="font-semibold text-xs sm:text-sm">
+                    {isPending ? "..." : user?.name ?? "User"}
+                  </p>
                   <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
-                    leonelngoya@gmail.com
+                    {isPending ? "..." : user?.email ?? ""}
                   </p>
                 </div>
                 <HugeiconsIcon icon={ArrowDown01Icon} className="size-4 text-muted-foreground shrink-0" />
@@ -175,7 +197,7 @@ export function DashboardSidebar({
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem className="text-destructive" onClick={handleLogout}>
               <HugeiconsIcon icon={Logout01Icon} className="size-4 mr-2" />
               Log out
             </DropdownMenuItem>
