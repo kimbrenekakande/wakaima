@@ -1,6 +1,5 @@
 "use client";
 
-import { leadStats } from "@/mock-data/leads";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Invoice01Icon, UserGroupIcon, Task01Icon, Notification01Icon, Mail01Icon } from "@hugeicons/core-free-icons";
 import { LeadsProps } from "@/lib/types";
@@ -11,29 +10,21 @@ export function StatsCards({ leads }: LeadsProps) {
     {
       title: "Total Leads",
       value: leads.length,
-      change: leadStats.totalLeadsChange,
-      changeValue: leadStats.totalLeadsChangeValue,
       icon: Invoice01Icon,
     },
     {
       title: "Contacted Leads",
       value: leads.flatMap((lead) => lead.emails).filter((email) => email.status === "sent").length,
-      change: leadStats.contactedLeadsChange,
-      changeValue: leadStats.contactedLeadsChangeValue,
       icon: UserGroupIcon,
     },
     {
       title: "Delivered Emails",
       value: leads.flatMap((lead) => lead.emails).filter((email) => email.status === "sent").length,
-      change: leadStats.qualifiedLeadsChange,
-      changeValue: leadStats.qualifiedLeadsChangeValue,
       icon: Mail01Icon,
     },
     {
       title: "Pending Drafts",
       value: leads.flatMap((lead) => lead.emails).filter((email) => email.status === "draft").length,
-      change: leadStats.hotLeadsChange,
-      changeValue: leadStats.hotLeadsChangeValue,
       icon: Notification01Icon,
     },
   ];
@@ -52,19 +43,6 @@ export function StatsCards({ leads }: LeadsProps) {
             <p className="text-2xl sm:text-[28px] font-semibold tracking-tight">
               {stat.value}
             </p>
-            <div className="flex items-center gap-2 text-xs sm:text-sm">
-              <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                +{stat.change}%(
-                {stat.changeValue > 0
-                  ? `$${stat.changeValue}`
-                  : stat.changeValue}
-                )
-              </span>
-              <span className="size-1 rounded-full bg-muted-foreground" />
-              <span className="text-muted-foreground hidden sm:inline">
-                vs Last Months
-              </span>
-            </div>
           </div>
         ))}
       </div>

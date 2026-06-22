@@ -7,7 +7,6 @@ app/dashboard/page.tsx                    ← Server Component (data fetching)
 components/dashboard/content.tsx           ← Client wrapper (props passthrough)
 components/dashboard/leads-table.tsx       ← Client Component (table UI, filters, pagination)
 store/leads-store.ts                       ← Zustand store (filter + pagination state)
-mock-data/leads.ts                         ← Type definition (Lead interface)
 ```
 
 ---
