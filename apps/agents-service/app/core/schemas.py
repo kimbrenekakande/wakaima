@@ -4,14 +4,16 @@ from typing import Optional
 class leadReq(BaseModel):
     industry: str
     country: str
+    district: Optional[str] = None    
+    no_results: int
     
 
 class SearchResult(BaseModel):
     id : Optional[int]
     name: Optional[str] = None
     url: Optional[str] = None
-    contactUrl : Optional[str] = None
     email : Optional[str] = None
+    location : Optional[str] = None
     profile : Optional[str] = None
     draft : Optional[str]=None
 
@@ -19,8 +21,22 @@ class SearchResult(BaseModel):
 class leadsSearchState(BaseModel):
     industry: str
     country: str
+    district: str
+    no_results : int
     leads: list[SearchResult]
 
 
 class emailReq(BaseModel):
     companies : list[SearchResult]
+
+
+class CompanyReport(BaseModel):
+    name : str
+    email : str
+    profile : str
+
+
+class ProfileData(BaseModel):
+    email : str
+    location : str
+                    
