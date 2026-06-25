@@ -63,7 +63,7 @@ const markdownCustomStyles: Record<string, CSSProperties> = {
 // ── Component ──────────────────────────────────────────────────────
 
 interface WelcomeEmailProps {
-  companyName: string;
+  leadName: string;
   url: string;
 }
 

@@ -8,3 +8,15 @@ export async function updateEmailBody(id: number, body: string) {
     data: { body },
   })
 }
+
+
+export async function sendEmail(id: number) {
+  const email = await prisma.email.findUnique({
+    where: { id },
+  })
+
+  if (!email) return
+  
+
+  console.log(email)
+}
