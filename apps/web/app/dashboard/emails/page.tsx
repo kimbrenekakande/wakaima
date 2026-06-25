@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -21,6 +22,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowDown01Icon,
@@ -32,7 +44,24 @@ import {
   Tick01Icon,
   Cancel01Icon,
   Delete01Icon,
+  Delete02Icon,
 } from "@hugeicons/core-free-icons";
+import { deleteEmail } from "@/lib/actions/email-actions";
+
+function stripMarkdown(md: string): string {
+  return md
+    .replace(/#{1,6}\s/g, "")
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*(.+?)\*/g, "$1")
+    .replace(/`{1,3}[^`]*`{1,3}/g, "")
+    .replace(/\[(.+?)\]\(.+?\)/g, "$1")
+    .replace(/^[*-]\s/gm, "")
+    .replace(/^\d+\.\s/gm, "")
+    .replace(/^>\s/gm, "")
+    .replace(/^[-=*_]{3,}\s*$/gm, "")
+    .replace(/\n+/g, " ")
+    .trim();
+}
 
 interface Email {
   id: number;
@@ -44,6 +73,8 @@ interface Email {
 }
 
 export default function EmailsPage() {
+  const router = useRouter();
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [emails, setEmails] = useState<Email[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -206,7 +237,7 @@ export default function EmailsPage() {
         <TableCaption>Current Lead Email Queue.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Project</TableHead>
+            <TableHead>Ref</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Lead</TableHead>
             <TableHead className="text-right">Contact</TableHead>
@@ -221,7 +252,7 @@ export default function EmailsPage() {
                 <Link href={`/dashboard/emails/editor/${email.id}`}>
                   <div className="flex items-center gap-2 max-w-xs">
                     <HugeiconsIcon icon={Mail01Icon} className="size-5 text-muted-foreground shrink-0" />
-                    <span className="font-medium truncate min-w-0">{email.body}</span>
+                    <span className="font-medium truncate min-w-0">{stripMarkdown(email.body)}</span>
                   </div>
                 </Link>
               </TableCell>
@@ -244,21 +275,44 @@ export default function EmailsPage() {
               <TableCell className="text-right">{email.lead?.contact ?? "-"}</TableCell>
               <TableCell className="text-right">{new Date(email.createdAt).toLocaleDateString()}</TableCell>
               <TableCell className="flex justify-end">
-                <DropdownMenu>
-                  <DropdownMenuTrigger
+                <AlertDialog>
+                  <AlertDialogTrigger
                     render={
-                      <Button variant="ghost" size="icon" className="size-7">
-                        <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8 text-muted-foreground hover:text-destructive"
+                        disabled={deletingId === email.id}
+                      >
+                        <HugeiconsIcon icon={Delete02Icon} className="size-4" />
                       </Button>
                     }
                   />
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  <AlertDialogContent size="sm">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Email</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete this email?
+                        This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        variant="destructive"
+                        disabled={deletingId === email.id}
+                        onClick={async () => {
+                          setDeletingId(email.id);
+                          await deleteEmail(email.id);
+                          setDeletingId(null);
+                          router.refresh();
+                        }}
+                      >
+                        {deletingId === email.id ? "Deleting..." : "Delete"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </TableCell>
             </TableRow>
           ))}

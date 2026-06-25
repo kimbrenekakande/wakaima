@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -18,16 +18,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowDown01Icon,
-  MoreHorizontalIcon,
+  Delete02Icon,
   Search01Icon,
   Invoice01Icon,
   OfficeIcon,
 } from "@hugeicons/core-free-icons";
 import { useLeadsStore } from "@/store/leads-store";
+import { deleteLead } from "@/lib/actions/lead-actions";
 import type { Lead } from "@/lib/types";
 
 interface LeadsContentProps {
@@ -36,6 +48,8 @@ interface LeadsContentProps {
 
 export function LeadsContent({ leads }: LeadsContentProps) {
   const { searchQuery, setSearchQuery, clearFilters } = useLeadsStore();
+  const router = useRouter();
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const filteredLeads = useMemo(() => {
     return leads.filter((lead) => {
@@ -170,21 +184,45 @@ export function LeadsContent({ leads }: LeadsContentProps) {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
+                    <AlertDialog>
+                      <AlertDialogTrigger
                         render={
-                          <Button variant="ghost" size="icon" className="size-7">
-                            <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4 text-muted-foreground" />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8 text-muted-foreground hover:text-destructive"
+                            disabled={deletingId === lead.id}
+                          >
+                            <HugeiconsIcon icon={Delete02Icon} className="size-4" />
                           </Button>
                         }
                       />
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Edit Lead</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">Delete Lead</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      <AlertDialogContent size="sm">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Lead</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete{" "}
+                            <span className="font-medium text-foreground">{lead.name}</span>?
+                            This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            variant="destructive"
+                            disabled={deletingId === lead.id}
+                            onClick={async () => {
+                              setDeletingId(lead.id);
+                              await deleteLead(lead.id);
+                              setDeletingId(null);
+                              router.refresh();
+                            }}
+                          >
+                            {deletingId === lead.id ? "Deleting..." : "Delete"}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </TableCell>
                 </TableRow>
               ))
