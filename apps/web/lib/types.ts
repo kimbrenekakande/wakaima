@@ -2,7 +2,7 @@ import {prisma} from "@/lib/prisma"
 
 export interface leadReq {
   industry  : string
-  country   : string
+  country: string
 }
 
 

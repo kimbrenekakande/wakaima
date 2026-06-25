@@ -21,12 +21,14 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
   return (
     <LeadDetails
       lead={{
+        id: lead.id,
         name: lead.name,
         url: lead.url,
-        contactUrl: null,
-        email: null,
+        contact: lead.contact,
         profile: lead.profile,
         draft: lead.draft,
+        createdAt: lead.createdAt,
+        updatedAt: lead.updatedAt,
         emails: lead.emails.map((e) => ({
           id: e.id,
           body: e.body,

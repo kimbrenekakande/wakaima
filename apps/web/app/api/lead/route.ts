@@ -8,11 +8,12 @@ export async function POST( request: Request) {
     const body = await request.json()
 
     if (!body.industry) return NextResponse.json({ error: 'Industry ID is required', status: 400 });
-    if (!body.country) return NextResponse.json({ error: 'Country is required', status: 400 });
+    if (!body.country) return NextResponse.json({ error: 'Country is required', status: 400 });    
+    
 
     const leadGen : leadReq = {
       industry: body.industry,
-      country : body.country
+      country: body.country,
     }
 
     const x = await fetch(`${AGENTIC_API_URL}/api/v1/lead`, {
@@ -25,7 +26,7 @@ export async function POST( request: Request) {
 
 
     for (const lead of response.leads) {
-      const l = await prisma.lead.create({
+      const lead_entry = await prisma.lead.create({
         data: {
           name :  lead.name,
           url  :  lead.url,

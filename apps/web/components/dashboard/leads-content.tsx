@@ -28,7 +28,7 @@ import {
   OfficeIcon,
 } from "@hugeicons/core-free-icons";
 import { useLeadsStore } from "@/store/leads-store";
-import type { Lead } from "@/app/dashboard/page";
+import type { Lead } from "@/lib/types";
 
 interface LeadsContentProps {
   leads: Lead[];

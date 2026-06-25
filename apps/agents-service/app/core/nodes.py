@@ -2,7 +2,6 @@ import json
 import os
 from typing import cast
 
-import markdown
 from core.models import groq, profileDataRetriverModel
 from core.schemas import (
     CompanyReport,
@@ -20,13 +19,13 @@ load_dotenv()
 
 
 async def search_node(state: leadsSearchState):
-    query = f"Generate Leads of {state.industry} Companies in {state.country}{' in ' + state.district if state.district else ''}"
+    query = f"Generate Leads of  companies or organizations in the the {state.industry} industry of {state.country}"
     exa = Exa(api_key=os.getenv("EXA_API_KEY"))
 
     results = exa.search_and_contents(
         query,
         category="company",
-        num_results=state.no_results,
+        num_results=10,
         type="deep",
     )
 
@@ -140,13 +139,34 @@ async def research_node(state: leadsSearchState):
 
 
 async def draft_node(state: emailReq):
+    mktCorp = {
+        "name": "Eagle Info Solutions",
+        "website": "www.eagleinfosolutions.com",
+        "email": "info@eagleinfosolutions.com",
+        "location": "Nalubega complex, Room L28. Opp Watoto Churh",
+        "services": "Eagle Info Solutions is a computer retail and repair company dedicated to providing top-notch technology solutions to various industries, including farming and agriculture."
+    }
     for company in state.companies:
         response = groq.invoke(
             input=f"""
-            write a markdown format lead generation email in react email syntax html to the company {company.name} from a computer retail and repair company called Eagle Info Solutions.
-            the email should be custom tailored based of the company's profile in this case {company.profile}
-            dont add thing but just the letter , dont communicate. make sure the response is plain text no layout.
+            draft a lead generation email strictly in markdown format  to the lead company below.
+            the email should be custom tailored based to the companies interest based on the company's profile below.
+            dont add thing but just the letter , dont communicate.
+            
+            Marketing Company Profile :
+                name : {mktCorp['name']}
+                website : {mktCorp['website']}
+                email : {mktCorp['email']}
+                location : {mktCorp['location']}
+                services : {mktCorp['services']}
+                
+            Lead Company Details : 
+                name: {company.name}
+                profile: {company.profile}
+
+            rules : 
+                - Make sure the contents of the email only ecompass the data provided no filler blanks to be filled
             """
         )
-        company.draft = markdown.markdown(response.text)
+        company.draft = response.text
     return state

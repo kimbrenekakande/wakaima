@@ -437,19 +437,19 @@ const countries: Country[] = [
 
 export default function Particle() {
   const router = useRouter();
-  
+
   const [industry, setIndustry] = useState("");
-  const [country, setCountry] = useState<Country>(countries[0]);
+  const [country, setCountry] = useState<Country>({ code: "ug", continent: "Africa", label: "Uganda", value: "uganda" });
 
   async function handleGenerate() {
     router.push("/dashboard");
-    
+
     try {
       console.log({ industry, country: country?.label });
       const response = await fetch("/api/lead/", {
         method: "POST",
         headers: { "content-type": "application/json", "api" :"fuckaround&findout" },
-        body: JSON.stringify({  industry, country: country.label}),
+        body: JSON.stringify({  industry, country: country.label }),
       });
 
       if (!response.ok) {

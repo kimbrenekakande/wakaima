@@ -20,12 +20,14 @@ import {
   Call02Icon,
   Location01Icon,
   Clock01Icon,
+  Calendar02Icon,
   OfficeIcon,
   MoreHorizontalIcon,
   Delete01Icon,
   PencilEdit01Icon,
   Link01Icon,
   File01Icon,
+  TimeHalfPassIcon,
 } from "@hugeicons/core-free-icons";
 import {
   parseProfile,
@@ -43,12 +45,14 @@ interface LeadEmail {
 }
 
 interface LeadDetailData {
+  id: number;
   name: string;
   url: string | null;
-  contactUrl: string | null;
-  email: string | null;
+  contact: string | null;
   profile: string | null;
   draft: string | null;
+  createdAt: Date;
+  updatedAt: Date;
   emails: LeadEmail[];
 }
 
@@ -139,13 +143,23 @@ function ProfileSectionCard({ section }: { section: ProfileSection }) {
   );
 }
 
+function formatDate(date: Date): string {
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export function LeadDetails({ lead }: LeadDetailsProps) {
   const sections = useMemo(() => parseProfile(lead.profile), [lead.profile]);
   const contactInfo = useMemo(() => extractContactInfo(sections), [sections]);
   const stats = useMemo(() => extractStats(sections), [sections]);
 
-  // Merge extracted contact info with lead-level fields
-  const displayEmail = lead.email || contactInfo?.email;
+  // Merge extracted contact info from profile with DB-level contact
+  const displayEmail = lead.contact || contactInfo?.email;
   const displayPhone = contactInfo?.phone;
   const displayAddress = contactInfo?.address;
   const displayHours = contactInfo?.hours;
@@ -155,6 +169,7 @@ export function LeadDetails({ lead }: LeadDetailsProps) {
 
   const sentCount = lead.emails.filter((e) => e.status === "sent").length;
   const draftCount = lead.emails.filter((e) => e.status === "draft").length;
+  const failedCount = lead.emails.filter((e) => e.status === "failed").length;
   const hasEmails = lead.emails.length > 0;
 
   return (
@@ -262,84 +277,89 @@ export function LeadDetails({ lead }: LeadDetailsProps) {
 
       <div className="flex flex-col xl:flex-row gap-4 sm:gap-6">
         {/* Contact Information */}
-        {hasContactInfo && (
-          <div className="border rounded-xl flex-1">
-            <div className="flex flex-row items-center justify-between py-5 px-5">
-              <h3 className="font-medium text-sm sm:text-base">Contact Information</h3>
-            </div>
-            <div className="px-5 pb-5 space-y-3">
-              {lead.url && (
-                <div className="flex items-start gap-3">
-                  <HugeiconsIcon
-                    icon={Globe02Icon}
-                    className="size-4 text-muted-foreground shrink-0 mt-0.5"
-                  />
-                  <div>
-                    <p className="text-xs text-muted-foreground/60 font-medium">Website</p>
-                    <a
-                      href={lead.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-primary hover:underline"
-                    >
-                      {displayUrl(lead.url)}
-                    </a>
-                  </div>
-                </div>
-              )}
-              {displayAddress && (
-                <div className="flex items-start gap-3">
-                  <HugeiconsIcon
-                    icon={Location01Icon}
-                    className="size-4 text-muted-foreground shrink-0 mt-0.5"
-                  />
-                  <p className="text-sm text-muted-foreground">
-                    {displayAddress}
-                  </p>
-                </div>
-              )}
-              {displayHours && (
-                <div className="flex items-start gap-3">
-                  <HugeiconsIcon
-                    icon={Clock01Icon}
-                    className="size-4 text-muted-foreground shrink-0 mt-0.5"
-                  />
-                  <p className="text-sm text-muted-foreground">
-                    {displayHours}
-                  </p>
-                </div>
-              )}
-              {displayEmail && (
-                <div className="flex items-center gap-3">
-                  <HugeiconsIcon
-                    icon={Mail01Icon}
-                    className="size-4 text-muted-foreground shrink-0"
-                  />
-                  <a
-                    href={`mailto:${displayEmail}`}
-                    className="text-sm text-primary hover:underline"
-                  >
-                    {displayEmail}
-                  </a>
-                </div>
-              )}
-              {displayPhone && (
-                <div className="flex items-center gap-3">
-                  <HugeiconsIcon
-                    icon={Call02Icon}
-                    className="size-4 text-muted-foreground shrink-0"
-                  />
-                  <a
-                    href={`tel:${displayPhone.replace(/\s/g, "")}`}
-                    className="text-sm text-primary hover:underline"
-                  >
-                    {displayPhone}
-                  </a>
-                </div>
-              )}
-            </div>
+        <div className="border rounded-xl flex-1">
+          <div className="flex flex-row items-center justify-between py-5 px-5">
+            <h3 className="font-medium text-sm sm:text-base">
+              Contact Information
+            </h3>
           </div>
-        )}
+          <div className="px-5 pb-5 space-y-3">
+            {lead.url && (
+              <div className="flex items-start gap-3">
+                <HugeiconsIcon
+                  icon={Globe02Icon}
+                  className="size-4 text-muted-foreground shrink-0 mt-0.5"
+                />
+                <div>
+                  <p className="text-xs text-muted-foreground/60 font-medium">
+                    Website
+                  </p>
+                  <a
+                    href={lead.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary hover:underline"
+                  >
+                    {displayUrl(lead.url)}
+                  </a>
+                </div>
+              </div>
+            )}
+            {displayAddress && (
+              <div className="flex items-start gap-3">
+                <HugeiconsIcon
+                  icon={Location01Icon}
+                  className="size-4 text-muted-foreground shrink-0 mt-0.5"
+                />
+                <p className="text-sm text-muted-foreground">
+                  {displayAddress}
+                </p>
+              </div>
+            )}
+            {displayHours && (
+              <div className="flex items-start gap-3">
+                <HugeiconsIcon
+                  icon={Clock01Icon}
+                  className="size-4 text-muted-foreground shrink-0 mt-0.5"
+                />
+                <p className="text-sm text-muted-foreground">{displayHours}</p>
+              </div>
+            )}
+            {displayEmail && (
+              <div className="flex items-center gap-3">
+                <HugeiconsIcon
+                  icon={Mail01Icon}
+                  className="size-4 text-muted-foreground shrink-0"
+                />
+                <a
+                  href={`mailto:${displayEmail}`}
+                  className="text-sm text-primary hover:underline"
+                >
+                  {displayEmail}
+                </a>
+              </div>
+            )}
+            {displayPhone && (
+              <div className="flex items-center gap-3">
+                <HugeiconsIcon
+                  icon={Call02Icon}
+                  className="size-4 text-muted-foreground shrink-0"
+                />
+                <a
+                  href={`tel:${displayPhone.replace(/\s/g, "")}`}
+                  className="text-sm text-primary hover:underline"
+                >
+                  {displayPhone}
+                </a>
+              </div>
+            )}
+            {!hasContactInfo && (
+              <p className="text-sm text-muted-foreground">
+                No contact information available
+              </p>
+            )}
+          </div>
+        </div>
 
         {/* Quick Info */}
         <div className="border rounded-xl flex-1">
@@ -347,25 +367,7 @@ export function LeadDetails({ lead }: LeadDetailsProps) {
             <h3 className="font-medium text-sm sm:text-base">Quick Info</h3>
           </div>
           <div className="px-5 pb-5 space-y-3">
-            {lead.contactUrl && (
-              <div className="flex items-start gap-3">
-                <HugeiconsIcon
-                  icon={Link01Icon}
-                  className="size-4 text-muted-foreground shrink-0 mt-0.5"
-                />
-                <div>
-                  <p className="text-xs text-muted-foreground/60 font-medium">Contact Page</p>
-                  <a
-                    href={lead.contactUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    {displayUrl(lead.contactUrl)}
-                  </a>
-                </div>
-              </div>
-            )}
+            {/* Emails summary */}
             {hasEmails && (
               <>
                 <div className="flex items-center gap-3">
@@ -374,7 +376,9 @@ export function LeadDetails({ lead }: LeadDetailsProps) {
                     className="size-4 text-emerald-500 shrink-0"
                   />
                   <div className="flex items-center gap-2">
-                    <p className="text-xs text-muted-foreground/60 font-medium">Sent</p>
+                    <p className="text-xs text-muted-foreground/60 font-medium">
+                      Sent
+                    </p>
                     <p className="text-sm font-semibold">{sentCount}</p>
                   </div>
                 </div>
@@ -384,12 +388,30 @@ export function LeadDetails({ lead }: LeadDetailsProps) {
                     className="size-4 text-amber-500 shrink-0"
                   />
                   <div className="flex items-center gap-2">
-                    <p className="text-xs text-muted-foreground/60 font-medium">Drafts</p>
+                    <p className="text-xs text-muted-foreground/60 font-medium">
+                      Drafts
+                    </p>
                     <p className="text-sm font-semibold">{draftCount}</p>
                   </div>
                 </div>
+                {failedCount > 0 && (
+                  <div className="flex items-center gap-3">
+                    <HugeiconsIcon
+                      icon={Mail01Icon}
+                      className="size-4 text-destructive shrink-0"
+                    />
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs text-muted-foreground/60 font-medium">
+                        Failed
+                      </p>
+                      <p className="text-sm font-semibold">{failedCount}</p>
+                    </div>
+                  </div>
+                )}
               </>
             )}
+
+            {/* Profile sections count */}
             {sections.length > 0 && (
               <div className="flex items-start gap-3">
                 <HugeiconsIcon
@@ -397,16 +419,45 @@ export function LeadDetails({ lead }: LeadDetailsProps) {
                   className="size-4 text-muted-foreground shrink-0 mt-0.5"
                 />
                 <div>
-                  <p className="text-xs text-muted-foreground/60 font-medium">Profile Sections</p>
+                  <p className="text-xs text-muted-foreground/60 font-medium">
+                    Profile Sections
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     {sections.filter((s) => s.title).length} sections extracted
                   </p>
                 </div>
               </div>
             )}
-            {!lead.contactUrl && !hasEmails && sections.length === 0 && (
-              <p className="text-sm text-muted-foreground">No additional information available</p>
-            )}
+
+            {/* Timestamps */}
+            <div className="flex items-start gap-3">
+              <HugeiconsIcon
+                icon={Calendar02Icon}
+                className="size-4 text-muted-foreground shrink-0 mt-0.5"
+              />
+              <div>
+                <p className="text-xs text-muted-foreground/60 font-medium">
+                  Created
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {formatDate(lead.createdAt)}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <HugeiconsIcon
+                icon={TimeHalfPassIcon}
+                className="size-4 text-muted-foreground shrink-0 mt-0.5"
+              />
+              <div>
+                <p className="text-xs text-muted-foreground/60 font-medium">
+                  Updated
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {formatDate(lead.updatedAt)}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -417,9 +468,14 @@ export function LeadDetails({ lead }: LeadDetailsProps) {
           <div className="flex flex-row items-center justify-between py-5 px-5">
             <div className="flex items-center gap-2">
               <Button variant="outline" size="icon" className="size-8">
-                <HugeiconsIcon icon={File01Icon} className="size-4 text-muted-foreground" />
+                <HugeiconsIcon
+                  icon={File01Icon}
+                  className="size-4 text-muted-foreground"
+                />
               </Button>
-              <h3 className="font-medium text-sm sm:text-base">Company Profile</h3>
+              <h3 className="font-medium text-sm sm:text-base">
+                Company Profile
+              </h3>
             </div>
           </div>
           <div className="px-5 pb-5">

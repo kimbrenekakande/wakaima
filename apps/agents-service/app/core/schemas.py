@@ -4,8 +4,6 @@ from typing import Optional
 class leadReq(BaseModel):
     industry: str
     country: str
-    district: Optional[str] = None    
-    no_results: int
     
 
 class SearchResult(BaseModel):
@@ -21,8 +19,6 @@ class SearchResult(BaseModel):
 class leadsSearchState(BaseModel):
     industry: str
     country: str
-    district: str
-    no_results : int
     leads: list[SearchResult]
 
 

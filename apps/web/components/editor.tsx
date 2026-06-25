@@ -7,6 +7,8 @@ import { Inspector } from "@react-email/editor/ui"
 import "@react-email/editor/themes/default.css"
 import { Button } from "./ui/button"
 import { useRef } from "react"
+import TurndownService from "turndown"
+import { updateEmailBody } from "@/lib/actions/email-actions"
 
 
 const customTheme = extendTheme("basic", {
@@ -25,17 +27,21 @@ const customTheme = extendTheme("basic", {
 }
 )
 
-const Editor = ({ content }: { content: string }) => {
+const Editor = ({id, content }: { id: number; content: string }) => {
   const editorRef = useRef<EmailEditorRef>(null)
-  
+
   const handleSend = async () => {
     if (!editorRef.current?.editor) return;
-    
+
     const { text, html } = await composeReactEmail({
       editor : editorRef.current.editor
     })
 
-    console.log(html)
+    const turndownService = new TurndownService()
+    const toMarkdown = turndownService.turndown(html)
+
+    await updateEmailBody(Number(id), toMarkdown)
+    
   }
 
   const sidebar = () => {
@@ -47,8 +53,8 @@ const Editor = ({ content }: { content: string }) => {
       </Inspector.Root>
     )
   }
-  
-  return (  
+
+  return (
     <div>
       <div className="flex flex-col items-center justify-center w-full h-full">
         <EmailEditor
@@ -60,8 +66,8 @@ const Editor = ({ content }: { content: string }) => {
       </div>
       <Button onClick={handleSend}> Send Email </Button>
     </div>
-    
+
   )
-} 
+}
 
 export default Editor;
