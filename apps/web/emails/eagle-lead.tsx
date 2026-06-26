@@ -67,14 +67,14 @@ interface WelcomeEmailProps {
   url: string;
 }
 
-export const LeadEmail  = ({ companyName, url }: WelcomeEmailProps) => (
+export const LeadEmail  = ({ leadName, url }: WelcomeEmailProps) => (
   <Tailwind>
     <Html>
       <Head>
         <style>{markdownDarkCSS}</style>
         <Font
           fontFamily="Inter"
-          fallbackFontFamily={['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif']}
+          fallbackFontFamily={['Helvetica', 'Arial', 'sans-serif']}
           webFont={{
             url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap',
             format: 'woff2',
@@ -82,7 +82,7 @@ export const LeadEmail  = ({ companyName, url }: WelcomeEmailProps) => (
         />
         <Font
           fontFamily="Barlow Condensed"
-          fallbackFontFamily={['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif']}
+          fallbackFontFamily={['Helvetica', 'Arial', 'sans-serif']}
           webFont={{
             url: 'https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&display=swap',
             format: 'woff2',
@@ -105,7 +105,7 @@ export const LeadEmail  = ({ companyName, url }: WelcomeEmailProps) => (
           </Section>
           <Section className="mobile:px-4 mobile:pt-10 mobile:pb-8 px-6 pt-16 pb-12">
             <Text className="text-neutral-700 dark:text-white mb-6 text-xl font-semibold">
-              Hello, {companyName}
+              Hello, {leadName}
             </Text>
             <Markdown
               children={draft}
@@ -207,7 +207,7 @@ export const LeadEmail  = ({ companyName, url }: WelcomeEmailProps) => (
   );
 
 LeadEmail.PreviewProps = {
-  companyName: 'Mink Technologies',
+  leadName: 'Mink Technologies',
   url: 'https://example.com/',
 } satisfies WelcomeEmailProps;
 

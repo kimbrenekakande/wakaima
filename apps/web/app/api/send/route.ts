@@ -1,10 +1,9 @@
 import { Resend } from 'resend';
 import LeadEmail from '@/emails/eagle-lead';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: Request) {
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
       from: 'Acme <onboarding@resend.dev>',
       to: ['kimbrenekakande@gmail.com'],
