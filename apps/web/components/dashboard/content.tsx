@@ -224,7 +224,7 @@ export function DashboardContent({ leads }: LeadsProps) {
                       </span>
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-sm text-muted-foreground" suppressHydrationWarning>
                         {lead.createdAt.toLocaleDateString()}
                       </span>
                     </TableCell>

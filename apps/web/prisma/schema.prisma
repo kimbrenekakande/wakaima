@@ -10,6 +10,8 @@ generator client {
   runtime    = "bun"
 }
 
+// Always change the provider value based on the PROD environment variable
+// could be "postgresql" or  "sqlite" for local development .
 datasource db {
   provider = "sqlite"
 }

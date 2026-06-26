@@ -3,12 +3,14 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
+const isProduction = process.env["PROD"] === "True";
+
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    url: isProduction ? process.env["DATABASE_URL"] : process.env["DATABASE_URL_LOCAL"],
   },
 });

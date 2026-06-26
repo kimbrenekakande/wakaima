@@ -166,7 +166,7 @@ export function DashboardSidebar({
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg cursor-pointer hover:bg-accent transition-colors">
+              <button className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg cursor-pointer hover:bg-accent transition-colors w-full text-left border-0 bg-transparent">
                 <Avatar className="size-7 sm:size-8">
                   <AvatarImage src={user?.image ?? undefined} />
                   <AvatarFallback className="text-xs">{initials}</AvatarFallback>
@@ -180,7 +180,7 @@ export function DashboardSidebar({
                   </p>
                 </div>
                 <HugeiconsIcon icon={ArrowDown01Icon} className="size-4 text-muted-foreground shrink-0" />
-              </div>
+              </button>
             }
           />
           <DropdownMenuContent align="end" className="w-[200px]">
