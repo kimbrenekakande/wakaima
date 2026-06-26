@@ -162,7 +162,7 @@ export function ComboboxPopup({
   portalProps,
   collisionBoundary,
   collisionPadding,
-  hideWhenDetached,
+  hideWhenDetached: _hideWhenDetached,
   sticky,
   ...props
 }: ComboboxPrimitive.Popup.Props & {
@@ -174,7 +174,7 @@ export function ComboboxPopup({
   portalProps?: ComboboxPrimitive.Portal.Props;
   collisionBoundary?: ComboboxPrimitive.Positioner.Props["collisionBoundary"];
   collisionPadding?: ComboboxPrimitive.Positioner.Props["collisionPadding"];
-  hideWhenDetached?: ComboboxPrimitive.Positioner.Props["hideWhenDetached"];
+  hideWhenDetached?: boolean;
   sticky?: ComboboxPrimitive.Positioner.Props["sticky"];
 }): React.ReactElement {
   const { chipsRef } = React.useContext(ComboboxContext);
@@ -190,7 +190,6 @@ export function ComboboxPopup({
         collisionBoundary={collisionBoundary}
         collisionPadding={collisionPadding}
         data-slot="combobox-positioner"
-        hideWhenDetached={hideWhenDetached}
         side={side}
         sideOffset={sideOffset}
         sticky={sticky}

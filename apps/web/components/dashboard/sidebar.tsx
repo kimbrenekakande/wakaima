@@ -51,18 +51,21 @@ const menuItems = [
     icon: DashboardSquare01Icon,
     href: "/dashboard",
     matchPath: (pathname: string) => pathname === "/dashboard",
+    isGradient: false,
   },
   {
     title: "Leads",
     icon: ChartLineData01Icon,
     href: "/dashboard/leads",
     matchPath: (pathname: string) => pathname.startsWith("/dashboard/leads"),
+    isGradient: false,
   },
   {
     title: "Emails",
     icon: Mail01Icon,
     href: "/dashboard/emails",
     matchPath: (pathname: string) => pathname.startsWith("/dashboard/emails"),
+    isGradient: false,
   }
 ];
 

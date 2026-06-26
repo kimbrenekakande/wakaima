@@ -18,7 +18,7 @@ export default async function EditorPage({ params }: Props) {
 
   return (
     <div className="h-full w-full">
-      <Editor id={id} content={ toHtml || ""} />
+      <Editor id={Number(id)} content={ toHtml || ""} />
     </div>
   );
 }

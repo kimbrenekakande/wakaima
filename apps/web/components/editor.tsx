@@ -46,8 +46,9 @@ const Editor = ({id, content }: { id: number; content: string }) => {
   }
 
   const handleSave = async () => {
-    const { text, html } = await editorContent()
-    if (!text || !html) return
+    const result = await editorContent()
+    if (!result?.text || !result?.html) return
+    const { text, html } = result
     const turndownService = new TurndownService()
     const toMarkdown = turndownService.turndown(html)
 
@@ -56,8 +57,8 @@ const Editor = ({id, content }: { id: number; content: string }) => {
   }
 
   const handleSend =  async () => {
-    const { text, html } = await editorContent()
-    if (!text || !html) return
+    const result = await editorContent()
+    if (!result?.text || !result?.html) return
 
     setSending(true)
     await sendEmail(Number(id))
