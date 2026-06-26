@@ -1,13 +1,20 @@
-from dotenv import load_dotenv
+import subprocess
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from dotenv import load_dotenv
 
 from app.middleware.auth import authentication
 from app.routes.v1 import emails, leads
 
 load_dotenv()
 
-app = FastAPI()
-# app.middleware("http")(authentication)
+@asynccontextmanager
+async def spinup_actions(app:FastAPI):
+    subprocess.run(["playwright", "install"], check=True)
+    yield
+
+app = FastAPI(lifespan=spinup_actions)
+app.middleware("http")(authentication)
 app.include_router(leads.router)
 app.include_router(emails.router)
 
