@@ -1,11 +1,11 @@
 from langgraph.graph import END, START, StateGraph
 
-from core.schemas import leadsSearchState
-from core.nodes import research_node, search_node
+from app.core.nodes import research_node, search_node
+from app.core.schemas import leadsSearchState
 
 flow = StateGraph(leadsSearchState)
 
-flow.add_node("search",search_node)
+flow.add_node("search", search_node)
 flow.add_node("research", research_node)
 
 flow.add_edge(START, "search")

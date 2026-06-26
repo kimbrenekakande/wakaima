@@ -1,7 +1,8 @@
-from fastapi import FastAPI
 from dotenv import load_dotenv
-from middleware.auth import authentication
-from routes.v1 import leads, emails
+from fastapi import FastAPI
+
+from app.middleware.auth import authentication
+from app.routes.v1 import emails, leads
 
 load_dotenv()
 

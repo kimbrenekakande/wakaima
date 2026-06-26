@@ -2,8 +2,12 @@ import json
 import os
 from typing import cast
 
-from core.models import groq, profileDataRetriverModel
-from core.schemas import (
+from crawl4ai import AsyncWebCrawler, CrawlerRunConfig, LLMConfig, LLMExtractionStrategy
+from dotenv import load_dotenv
+from exa_py import Exa
+
+from app.core.models import groq, profileDataRetriverModel
+from app.core.schemas import (
     CompanyReport,
     ProfileData,
     SearchResult,
@@ -11,9 +15,6 @@ from core.schemas import (
     # leadReq,
     leadsSearchState,
 )
-from crawl4ai import AsyncWebCrawler, CrawlerRunConfig, LLMConfig, LLMExtractionStrategy
-from dotenv import load_dotenv
-from exa_py import Exa
 
 load_dotenv()
 
@@ -144,7 +145,7 @@ async def draft_node(state: emailReq):
         "website": "www.eagleinfosolutions.com",
         "email": "info@eagleinfosolutions.com",
         "location": "Nalubega complex, Room L28. Opp Watoto Churh",
-        "services": "Eagle Info Solutions is a computer retail and repair company dedicated to providing top-notch technology solutions to various industries, including farming and agriculture."
+        "services": "Eagle Info Solutions is a computer retail and repair company dedicated to providing top-notch technology solutions to various industries, including farming and agriculture.",
     }
     for company in state.companies:
         response = groq.invoke(
@@ -152,19 +153,19 @@ async def draft_node(state: emailReq):
             draft a lead generation email strictly in markdown format  to the lead company below.
             the email should be custom tailored based to the companies interest based on the company's profile below.
             dont add thing but just the letter , dont communicate.
-            
+
             Marketing Company Profile :
-                name : {mktCorp['name']}
-                website : {mktCorp['website']}
-                email : {mktCorp['email']}
-                location : {mktCorp['location']}
-                services : {mktCorp['services']}
-                
-            Lead Company Details : 
+                name : {mktCorp["name"]}
+                website : {mktCorp["website"]}
+                email : {mktCorp["email"]}
+                location : {mktCorp["location"]}
+                services : {mktCorp["services"]}
+
+            Lead Company Details :
                 name: {company.name}
                 profile: {company.profile}
 
-            rules : 
+            rules :
                 - Make sure the contents of the email only ecompass the data provided no filler blanks to be filled
             """
         )

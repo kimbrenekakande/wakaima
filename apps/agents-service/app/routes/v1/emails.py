@@ -1,7 +1,8 @@
-from agents.mailer import graph
-from core.models import groq
-from core.schemas import emailReq
 from fastapi import APIRouter
+
+from app.agents.mailer import graph
+from app.core.models import groq
+from app.core.schemas import emailReq
 
 router = APIRouter(prefix="/api/v1", tags=["Emails"])
 
