@@ -1,15 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -32,10 +26,9 @@ import {
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ArrowDown01Icon,
+  Add01Icon,
   Delete02Icon,
   Search01Icon,
-  Invoice01Icon,
   OfficeIcon,
 } from "@hugeicons/core-free-icons";
 import { useLeadsStore } from "@/store/leads-store";
@@ -50,6 +43,25 @@ export function LeadsContent({ leads }: LeadsContentProps) {
   const { searchQuery, setSearchQuery, clearFilters } = useLeadsStore();
   const router = useRouter();
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const generateDrafts = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/email", { method: "GET" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || `Server error: ${res.status}`);
+      }
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to generate drafts");
+    } finally {
+      setLoading(false);
+    }
+  }, [router]);
 
   const filteredLeads = useMemo(() => {
     return leads.filter((lead) => {
@@ -77,27 +89,20 @@ export function LeadsContent({ leads }: LeadsContentProps) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button variant="outline" className="gap-2">
-                  <HugeiconsIcon icon={Invoice01Icon} className="size-4" />
-                  <span>Import/Export</span>
-                  <HugeiconsIcon
-                    icon={ArrowDown01Icon}
-                    className="size-4 text-muted-foreground"
-                  />
-                </Button>
-              }
-            />
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Import Leads</DropdownMenuItem>
-              <DropdownMenuItem>Export to CSV</DropdownMenuItem>
-              <DropdownMenuItem>Export to Excel</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Link href="/dashboard/form">
+            <Button className="gap-2 bg-foreground text-background hover:bg-foreground/90 cursor-pointer">
+              <HugeiconsIcon icon={Add01Icon} className="size-4" />
+              <span>New leads</span>
+            </Button>
+          </Link>
         </div>
       </div>
+
+      {error && (
+        <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md border border-destructive/20">
+          {error}
+        </div>
+      )}
 
       {/* Filter bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">

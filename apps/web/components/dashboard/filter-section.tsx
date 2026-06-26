@@ -77,7 +77,7 @@ export function FilterSection() {
         <Link href="/dashboard/form">
           <Button className="gap-2 bg-foreground text-background hover:bg-foreground/90 cursor-pointer">
             <HugeiconsIcon icon={Add01Icon} className="size-4" />
-            <span>Create New</span>
+            <span>New leads</span>
           </Button>
         </Link>
       </div>
