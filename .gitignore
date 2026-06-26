@@ -8,3 +8,8 @@ node_modules
 
 # Turbo
 .turbo
+
+# Environment files
+.env
+.env.*
+!.env.example
