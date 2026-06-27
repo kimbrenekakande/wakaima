@@ -5,6 +5,7 @@ from typing import cast
 from crawl4ai import AsyncWebCrawler, CrawlerRunConfig, LLMConfig, LLMExtractionStrategy
 from dotenv import load_dotenv
 from exa_py import Exa
+from firecrawl import Firecrawl
 
 from app.core.models import groq, profileDataRetriverModel
 from app.core.schemas import (
@@ -39,6 +40,52 @@ async def search_node(state: leadsSearchState):
     return state
 
 
+
+async def fire_crawler_node(state: leadsSearchState):
+    
+    firecrawl_api_key = os.getenv("FIRECRAWL_API_KEY")
+    if firecrawl_api_key is None:
+        raise ValueError("FIRECRAWL_API_KEY environment variable is not set")
+    firecraw = Firecrawl(api_key=firecrawl_api_key)
+     
+    for lead in state.leads:
+        if not lead.url:
+             state.leads.remove(lead)
+             continue
+        try:
+            data = firecraw.scrape(lead.url, formats=["markdown"])
+            lead.profile = data.markdown
+        except Exception as e:
+            print(f"Error scraping {lead.url}: {e}")
+            lead.profile = None
+
+
+
+async def analyze_node(state: leadsSearchState):
+    for lead in state.leads:
+        if not lead.profile:
+            state.leads.remove(lead)
+            continue
+            
+        try:
+            response = cast(
+                ProfileData,
+                profileDataRetriverModel.invoke(
+                    [{
+                        "role": "user",
+                        "content": f"""analyze the lead company profile below and extract the details
+                        lead_profile: {lead.profile}""",
+                    }]
+                ),
+            )
+            lead.email = response.email
+            lead.location = response.location
+        except Exception as e:
+            print(f"Error analyzing {lead.url}: {e}")
+            state.leads.remove(lead)
+  
+  
+            
 def _parse_extracted_content(extracted_content):
     """Parse crawled extracted_content (a JSON string) into a dict.
 
@@ -49,6 +96,7 @@ def _parse_extracted_content(extracted_content):
     if isinstance(parsed, list):
         return parsed[0] if parsed else {}
     return parsed
+
 
 
 async def research_node(state: leadsSearchState):
@@ -136,7 +184,8 @@ async def research_node(state: leadsSearchState):
 
             if response:
                 lead.email = response.email
-                lead.location = response.location
+                lead.location = response.location    
+
 
 
 async def draft_node(state: emailReq):
