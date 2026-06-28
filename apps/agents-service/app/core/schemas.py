@@ -33,6 +33,6 @@ class CompanyReport(BaseModel):
 
 
 class ProfileData(BaseModel):
-    email : str
-    location : str
+    email : Optional[str]
+    location : Optional[str]
                     

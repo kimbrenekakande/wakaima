@@ -55,8 +55,10 @@ async def analyze_node(state: leadsSearchState):
             get_data: ProfileData = cast(
                 ProfileData, await ProfileDataExtraction(profile=lead.profile)
             )
-            lead.email = get_data.email or None
-            lead.location = get_data.location or None
+            if get_data.email and get_data.email != "null":
+                lead.email = get_data.email
+            if get_data.location and get_data.location != "null":
+                lead.location = get_data.location
 
         try:
             if lead.email == "null" and lead.url:
@@ -67,8 +69,10 @@ async def analyze_node(state: leadsSearchState):
                     response: ProfileData = cast(
                         ProfileData, await ProfileDataExtraction(profile=lead.profile)
                     )
-                    lead.email = response.email or None
-                    lead.location = response.location or None
+                    if response.email and response.email != "null":
+                        lead.email = response.email
+                    if response.location and response.location != "null":
+                        lead.location = response.location
 
         except Exception as e:
             print(

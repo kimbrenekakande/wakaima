@@ -11,7 +11,7 @@ async def ProfileDataExtraction(profile : str) -> ProfileData:
             [
                 {
                     "role": "user",
-                    "content": f"""analyze the lead company profile below and extract its email and location. if any insnt available please null
+                    "content": f"""analyze the lead company profile below and extract its email and location. if any insnt available return null
                 lead_profile: {profile}""",
                 }
             ]
