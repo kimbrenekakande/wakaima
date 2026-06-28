@@ -438,6 +438,7 @@ export type EmailCreateOrConnectWithoutLeadInput = {
 
 export type EmailCreateManyLeadInputEnvelope = {
   data: Prisma.EmailCreateManyLeadInput | Prisma.EmailCreateManyLeadInput[]
+  skipDuplicates?: boolean
 }
 
 export type EmailUpsertWithWhereUniqueWithoutLeadInput = {
@@ -1216,6 +1217,7 @@ export type EmailCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * The data used to create many Emails.
    */
   data: Prisma.EmailCreateManyInput | Prisma.EmailCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1234,6 +1236,7 @@ export type EmailCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extension
    * The data used to create many Emails.
    */
   data: Prisma.EmailCreateManyInput | Prisma.EmailCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */
