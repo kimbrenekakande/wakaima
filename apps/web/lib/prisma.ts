@@ -9,7 +9,7 @@ const connectionString = `${process.env.DATABASE_URL_LOCAL}`;
 let adapter
 
 if (isProduction) {
-  adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL_LOCAL! });
+  adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! });
 } else {
   adapter = new PrismaLibSql({ url: connectionString });
 }
