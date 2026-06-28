@@ -446,7 +446,7 @@ export default function Particle() {
 
     try {
       console.log({ industry, country: country?.label });
-      const response = await fetch("/api/lead/", {
+      const response = await fetch("/api/lead", {
         method: "POST",
         headers: { "content-type": "application/json", "api" :"fuckaround&findout" },
         body: JSON.stringify({  industry, country: country.label }),

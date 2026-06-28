@@ -50,7 +50,7 @@ export function LeadsContent({ leads }: LeadsContentProps) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/email", { method: "GET" });
+      const res = await fetch("/api/emails", { method: "POST" });
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || `Server error: ${res.status}`);

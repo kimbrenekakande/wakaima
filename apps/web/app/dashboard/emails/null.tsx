@@ -94,10 +94,10 @@ export default function Emails() {
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/email");
+      const res = await fetch("/api/emails");
       if (!res.ok) return;
       const data = await res.json();
-      setEmails(data.emails ?? []);
+      setEmails(data ?? []);
     } finally {
       setLoading(false);
     }
@@ -106,7 +106,7 @@ export default function Emails() {
   const generateDrafts = useCallback(async () => {
     setLoading(true);
     try {
-      await fetch("/api/email", { method: "GET" });
+      await fetch("/api/emails", { method: "POST" });
     } finally {
       setLoading(false);
     }
