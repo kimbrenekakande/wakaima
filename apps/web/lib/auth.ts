@@ -3,8 +3,14 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 
 export const auth = betterAuth({
+  baseURL: {
+		allowedHosts: [
+			"*.vercel.app",
+		],
+		fallback: "wakaima.vercel.app",
+	},
   database: prismaAdapter(prisma, {
-    provider: "sqlite",
+    provider: "postgresql",
   }),
   emailAndPassword: {
     enabled: true,
