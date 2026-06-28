@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from exa_py import Exa
 from firecrawl import Firecrawl
 
-from app.core.models import groq, profileDataRetriverModel
+from app.core.models import groq, profileDataRetrieverModel
 from app.core.schemas import (
     CompanyReport,
     ProfileData,
@@ -16,6 +16,7 @@ from app.core.schemas import (
     # leadReq,
     leadsSearchState,
 )
+from lib.actions.extraction import ProfileDataExtraction
 
 load_dotenv()
 
@@ -32,60 +33,49 @@ async def search_node(state: leadsSearchState):
     )
 
     for r in results.results:
-        print(r)
         state.leads.append(
             SearchResult(id=None, name=r.title, url=r.url, profile=r.text)
         )
 
+    if results.results:
+        print("Exa Generation Completed")
+
     return state
 
 
+async def analyze_node(state: leadsSearchState):
 
-async def fire_crawler_node(state: leadsSearchState):
-    
     firecrawl_api_key = os.getenv("FIRECRAWL_API_KEY")
     if firecrawl_api_key is None:
         raise ValueError("FIRECRAWL_API_KEY environment variable is not set")
     firecraw = Firecrawl(api_key=firecrawl_api_key)
-     
+
     for lead in state.leads:
-        if not lead.url:
-             state.leads.remove(lead)
-             continue
-        try:
-            data = firecraw.scrape(lead.url, formats=["markdown"])
-            lead.profile = data.markdown
-        except Exception as e:
-            print(f"Error scraping {lead.url}: {e}")
-            lead.profile = None
-
-
-
-async def analyze_node(state: leadsSearchState):
-    for lead in state.leads:
-        if not lead.profile:
-            state.leads.remove(lead)
-            continue
-            
-        try:
-            response = cast(
-                ProfileData,
-                profileDataRetriverModel.invoke(
-                    [{
-                        "role": "user",
-                        "content": f"""analyze the lead company profile below and extract the details
-                        lead_profile: {lead.profile}""",
-                    }]
-                ),
+        if lead.url and lead.profile:
+            get_data: ProfileData = cast(
+                ProfileData, await ProfileDataExtraction(profile=lead.profile)
             )
-            lead.email = response.email
-            lead.location = response.location
+            lead.email = get_data.email or None
+            lead.location = get_data.location or None
+
+        try:
+            if lead.email == "null" and lead.url:
+                data = firecraw.scrape(lead.url, formats=["markdown"])
+                lead.profile = data.markdown
+
+                if lead.profile:
+                    response: ProfileData = cast(
+                        ProfileData, await ProfileDataExtraction(profile=lead.profile)
+                    )
+                    lead.email = response.email or None
+                    lead.location = response.location or None
+
         except Exception as e:
-            print(f"Error analyzing {lead.url}: {e}")
-            state.leads.remove(lead)
-  
-  
-            
+            print(
+                f"[analyze_node] Failed to extract data for {lead.name} ({lead.url}): {e}"
+            )
+
+
 def _parse_extracted_content(extracted_content):
     """Parse crawled extracted_content (a JSON string) into a dict.
 
@@ -96,7 +86,6 @@ def _parse_extracted_content(extracted_content):
     if isinstance(parsed, list):
         return parsed[0] if parsed else {}
     return parsed
-
 
 
 async def research_node(state: leadsSearchState):
@@ -184,8 +173,7 @@ async def research_node(state: leadsSearchState):
 
             if response:
                 lead.email = response.email
-                lead.location = response.location    
-
+                lead.location = response.location
 
 
 async def draft_node(state: emailReq):

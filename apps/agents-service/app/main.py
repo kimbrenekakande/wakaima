@@ -10,7 +10,6 @@ load_dotenv()
 
 @asynccontextmanager
 async def spinup_actions(app:FastAPI):
-    subprocess.run(["playwright", "install"], check=True)
     yield
 
 app = FastAPI(lifespan=spinup_actions)
