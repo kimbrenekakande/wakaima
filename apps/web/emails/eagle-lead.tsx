@@ -4,7 +4,7 @@ import { Body, Column, Container, Font, Head, Heading, Html, Img, Link, Preview,
 import type { CSSProperties } from 'react';
 import { draft } from '@/lib/data/draft';
 
-const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+const baseUrl = process.env.BASE_URL;
 
 // ── Dark-mode overrides for Markdown output (Tailwind can't process these) ──
 
@@ -64,10 +64,10 @@ const markdownCustomStyles: Record<string, CSSProperties> = {
 
 interface WelcomeEmailProps {
   leadName: string;
-  url: string;
+  draft: string;
 }
 
-export const LeadEmail  = ({ leadName, url }: WelcomeEmailProps) => (
+export const LeadEmail  = ({ leadName, draft }: WelcomeEmailProps) => (
   <Tailwind>
     <Html>
       <Head>
@@ -97,7 +97,7 @@ export const LeadEmail  = ({ leadName, url }: WelcomeEmailProps) => (
         <Container className="bg-white dark:bg-black mx-auto max-w-[640px]">
           <Section>
             <Img
-              src={`${baseUrl}/static/Brand/email-header.png`}
+              src={`${baseUrl}/brand/email-header.png`}
               alt=""
               width={592}
               className="block w-full"
@@ -179,9 +179,9 @@ export const LeadEmail  = ({ leadName, url }: WelcomeEmailProps) => (
             <Row align="left">
               <Column className="w-full pt-8 align-top">
                 <Text className="text-[11px] text-neutral-500 dark:text-neutral-400 m-0">
-                  123 Market Street, Floor 1
+                  Shop L28, 1st Floor, Nalubega Complex, Kampala, Uganda
                   <br />
-                  Tech City, CA, 94102
+                  (Opp Watoto Church, Bombo Road)
                 </Text>
               </Column>
             </Row>
@@ -190,12 +190,12 @@ export const LeadEmail  = ({ leadName, url }: WelcomeEmailProps) => (
               <Column className="w-full pt-5 align-top">
                 <Text className="text-[11px] text-neutral-500 dark:text-neutral-400 m-0 max-w-[160px]">
                   <Link
-                    href="https://example.com/"
+                    href="https://eagleinfosolutions.com/"
                     className="text-neutral-500 dark:text-neutral-400 underline"
                   >
                     Unsubscribe
                   </Link>{' '}
-                  from Eagle Info Solutions marketing emails.
+                  from Eagle Info Solutions.
                 </Text>
               </Column>
             </Row>
@@ -208,7 +208,7 @@ export const LeadEmail  = ({ leadName, url }: WelcomeEmailProps) => (
 
 LeadEmail.PreviewProps = {
   leadName: 'Mink Technologies',
-  url: 'https://example.com/',
+  draft: 'WELCOME TO THE FINAL SHOW',
 } satisfies WelcomeEmailProps;
 
 export default LeadEmail;

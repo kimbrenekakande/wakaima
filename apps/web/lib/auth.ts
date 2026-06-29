@@ -6,7 +6,8 @@ export const auth = betterAuth({
   baseURL: {
     allowedHosts: [
       "https://wakaima.vercel.app",
-			"*.vercel.app",
+      "*.vercel.app",
+			"http://localhost:3000"
 		],
 		fallback: "https://wakaima.vercel.app",
 	},

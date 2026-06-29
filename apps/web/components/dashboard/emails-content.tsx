@@ -41,10 +41,9 @@ import {
   FilterIcon,
   MoreHorizontalIcon,
   Search01Icon,
-  Tick01Icon,
   Cancel01Icon,
-  Delete01Icon,
   Delete02Icon,
+  MailSend01Icon,
 } from "@hugeicons/core-free-icons";
 import { deleteEmail } from "@/lib/actions/email-actions";
 
@@ -54,7 +53,7 @@ interface Email {
   status: string;
   leadId: number | null;
   lead: { name: string; contact: string | null } | null;
-  createdAt: Date;
+  createdAt: string;
 }
 
 interface EmailsContentProps {
@@ -81,6 +80,8 @@ export function EmailsContent({ emails }: EmailsContentProps) {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
+
 
   const generateDrafts = useCallback(async () => {
     setLoading(true);
@@ -99,6 +100,23 @@ export function EmailsContent({ emails }: EmailsContentProps) {
     }
   }, [router]);
 
+  const sendAllEmails = useCallback(async () => {
+    setSending(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/send", { method: "POST" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || `Server error: ${res.status}`);
+      }
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send all emails");
+    } finally {
+      setSending(false);
+    }
+  }, [router]);
+
   return (
     <main className="flex-1 overflow-auto p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 bg-background w-full">
       {/* Header */}
@@ -111,33 +129,15 @@ export function EmailsContent({ emails }: EmailsContentProps) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button variant="outline" className="gap-2">
-                  <span>Bulk Actions</span>
-                  <HugeiconsIcon
-                    icon={ArrowDown01Icon}
-                    className="size-4 text-muted-foreground"
-                  />
-                </Button>
-              }
-            />
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <HugeiconsIcon icon={Tick01Icon} className="size-4 mr-2" />
-                Mark as Read
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <HugeiconsIcon icon={Mail01Icon} className="size-4 mr-2" />
-                Archive Selected
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <HugeiconsIcon icon={Delete01Icon} className="size-4 mr-2" />
-                Delete Selected
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={sendAllEmails}
+            disabled={sending}
+          >
+            <HugeiconsIcon icon={MailSend01Icon} className="size-4" />
+            <span>{sending ? "Sending..." : "Send All"}</span>
+          </Button>
 
           <Button
             onClick={generateDrafts}
@@ -267,7 +267,7 @@ export function EmailsContent({ emails }: EmailsContentProps) {
               </TableCell>
               <TableCell className="text-right">{email.lead?.name ?? "-"}</TableCell>
               <TableCell className="text-right">{email.lead?.contact ?? "-"}</TableCell>
-              <TableCell className="text-right">{email.createdAt.toLocaleDateString()}</TableCell>
+              <TableCell className="text-right">{email.createdAt}</TableCell>
               <TableCell className="flex justify-end">
                 <AlertDialog>
                   <AlertDialogTrigger

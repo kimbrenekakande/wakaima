@@ -15,7 +15,7 @@ export default async function EmailsPage() {
         status: e.status,
         leadId: e.leadId,
         lead: e.lead,
-        createdAt: e.createdAt,
+        createdAt: e.createdAt.toLocaleDateString("en-US"),
       }))}
     />
   );

@@ -10,13 +10,7 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <div className="flex justify-between items-center mx-6 p-4  mb-4 border  border-orange-500 border-x-transparent">
-        <p>Hang Tight, Generating Leads</p>
-        <Link href="/dashboard/form">
-          <Button>New leads</Button>
-        </Link>
-      </div>
-      <DashboardContent leads={leads} />;
+      <DashboardContent leads={leads} />
     </>
   )
 }

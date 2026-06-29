@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import AGENTIC_API_URL from "@/lib/service-url";
+import { useGenerating } from "@/lib/store";
 
 interface Country {
   code: string;
@@ -438,30 +439,34 @@ const countries: Country[] = [
 export default function Particle() {
   const router = useRouter();
 
+  const { isGenerating, setGenerating } = useGenerating();
   const [industry, setIndustry] = useState("");
   const [country, setCountry] = useState<Country>({ code: "ug", continent: "Africa", label: "Uganda", value: "uganda" });
 
   async function handleGenerate() {
     router.push("/dashboard");
-
+    setGenerating(true);
     try {
       console.log({ industry, country: country?.label });
       const response = await fetch("/api/lead", {
         method: "POST",
-        headers: { "content-type": "application/json", "api" :"fuckaround&findout" },
         body: JSON.stringify({  industry, country: country.label }),
       });
 
       if (!response.ok) {
         const errorBody = await response.json().catch(() => null);
         console.error("API error:", response.status, errorBody);
+        setGenerating(false);
         return;
       }
 
       const data = await response.json();
       console.log("Lead created:", data);
+      router.refresh();
     } catch (error) {
       console.error("Failed to generate lead:", error);
+    } finally {
+      setGenerating(false);
     }
   }
 

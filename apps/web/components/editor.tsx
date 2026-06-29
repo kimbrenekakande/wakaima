@@ -60,8 +60,15 @@ const Editor = ({id, content }: { id: number; content: string }) => {
     const result = await editorContent()
     if (!result?.text || !result?.html) return
 
+    const turndownService = new TurndownService()
+    const toMarkdown = turndownService.turndown(result.html)
+
     setSending(true)
-    await sendEmail(Number(id))
+    try {
+      await sendEmail(Number(id), toMarkdown)
+    } catch (error) {
+      console.error('Send failed:', error)
+    }
     setSending(false)
   }
 

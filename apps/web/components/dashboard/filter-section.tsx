@@ -10,7 +10,10 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowDown01Icon, Add01Icon, Invoice01Icon } from "@hugeicons/core-free-icons";
 import { useLeadsStore, DateFilter } from "@/store/leads-store";
+import { DotmSquare20 } from "@/components/ui/dotm-square-20";
 import Link from "next/link";
+import { useGenerating } from "@/lib/store";
+
 
 const dateFilterLabels: Record<DateFilter, string> = {
   all: "All Time",
@@ -23,7 +26,8 @@ const dateFilterLabels: Record<DateFilter, string> = {
 
 export function FilterSection() {
   const { dateFilter, setDateFilter } = useLeadsStore();
-
+  const { isGenerating } = useGenerating();
+  
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
       <DropdownMenu>
@@ -50,14 +54,9 @@ export function FilterSection() {
 
       <div className="flex items-center gap-2 sm:gap-3">
         <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button variant="outline" className="gap-2">
-                <span>Import/Export</span>
-                <HugeiconsIcon icon={ArrowDown01Icon} className="size-4 text-muted-foreground" />
-              </Button>
-            }
-          />
+          <div className="flex items-center gap-2">
+           {isGenerating && <DotmSquare20 color="#CC5500"/>}
+          </div>
           <DropdownMenuContent align="end">
             <DropdownMenuItem>
               <HugeiconsIcon icon={Invoice01Icon} className="size-4 mr-2" />
@@ -77,7 +76,7 @@ export function FilterSection() {
         <Link href="/dashboard/form">
           <Button className="gap-2 bg-foreground text-background hover:bg-foreground/90 cursor-pointer">
             <HugeiconsIcon icon={Add01Icon} className="size-4" />
-            <span>New leads</span>
+            {isGenerating ? <span className="mr-1">Generating</span> : <span>New leads</span>}
           </Button>
         </Link>
       </div>

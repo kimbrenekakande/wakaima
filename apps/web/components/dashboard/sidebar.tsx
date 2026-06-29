@@ -175,10 +175,10 @@ export function DashboardSidebar({
                   <AvatarFallback className="text-xs">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-xs sm:text-sm">
+                  <p className="font-semibold text-xs sm:text-sm" suppressHydrationWarning>
                     {isPending ? "..." : user?.name ?? "User"}
                   </p>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate" suppressHydrationWarning>
                     {isPending ? "..." : user?.email ?? ""}
                   </p>
                 </div>
