@@ -8,17 +8,19 @@ export async function POST( request: Request) {
     const body = await request.json()
 
     if (!body.industry) return NextResponse.json({ error: 'Industry ID is required', status: 400 });
-    if (!body.country) return NextResponse.json({ error: 'Country is required', status: 400 });    
-    
+    if (!body.country) return NextResponse.json({ error: 'Country is required', status: 400 });
+
 
     const leadGen : leadReq = {
       industry: body.industry,
       country: body.country,
     }
-
     const x = await fetch(`${AGENTIC_API_URL}/api/v1/lead`, {
       method: 'POST',
-      headers: { "content-type": "application/json" },
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": process.env.AGENTIC_API_KEY as string
+      },
       body: JSON.stringify(leadGen),
     })
 
