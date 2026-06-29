@@ -1,4 +1,4 @@
-### Introduction to Eagle Info Solutions
+### Introduction to Eagle Info Solutions smc limited
 Dear AgriTech Solutions Ltd Team,
 We came across your company, AgriTech Solutions Ltd, and were impressed by your innovative approach to precision farming solutions. As a computer retail and repair company, Eagle Info Solutions is dedicated to providing top-notch technology solutions to various industries, including farming and agriculture.
 
