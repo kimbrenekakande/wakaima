@@ -32,7 +32,10 @@ export async function POST() {
 
     const response = await fetch(`${AGENTIC_API_URL}/api/v1/email`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": process.env.AGENTIC_API_KEY as string,
+      },
       body: JSON.stringify({ companies }),
     });
 
