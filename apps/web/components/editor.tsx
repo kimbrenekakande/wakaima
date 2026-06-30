@@ -96,7 +96,7 @@ const Editor = ({id, content }: { id: number; content: string }) => {
           <Button onClick={handleSave} variant="outline" size="icon">
             <HugeiconsIcon icon={FloppyDiskIcon} className="size-4" />
           </Button>
-          <Button onClick={handleSend} disabled={sending}>
+          <Button onClick={handleSend} disabled={sending} className="bg-[#cc6600] hover:bg-[#b35900] text-white cursor-pointer">
             {sending ? "Sending..." : "Send Email"}
           </Button>
         </div>
@@ -104,11 +104,10 @@ const Editor = ({id, content }: { id: number; content: string }) => {
 
       <div className="flex flex-col items-center justify-center w-full h-full">
         <EmailEditor
-          content={content}
-          theme={customTheme}
-          ref={editorRef}
-          // className="flex-1 max-w-0 h-full overflow-y-auto"
-        />
+                  content={content}
+                  theme={customTheme}
+                  ref={editorRef}
+                />
       </div>
 
     </div>

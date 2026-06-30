@@ -1,17 +1,22 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowLeft01Icon,
@@ -22,9 +27,7 @@ import {
   Clock01Icon,
   Calendar02Icon,
   OfficeIcon,
-  MoreHorizontalIcon,
   Delete01Icon,
-  PencilEdit01Icon,
   Link01Icon,
   File01Icon,
   TimeHalfPassIcon,
@@ -36,6 +39,7 @@ import {
   type ProfileSection,
   type ProfileLine,
 } from "@/lib/profile-parser";
+import { deleteLead } from "@/lib/actions/lead-actions";
 
 interface LeadEmail {
   id: number;
@@ -154,6 +158,8 @@ function formatDate(date: Date): string {
 }
 
 export function LeadDetails({ lead }: LeadDetailsProps) {
+  const router = useRouter();
+  const [deleting, setDeleting] = useState(false);
   const sections = useMemo(() => parseProfile(lead.profile), [lead.profile]);
   const contactInfo = useMemo(() => extractContactInfo(sections), [sections]);
   const stats = useMemo(() => extractStats(sections), [sections]);
@@ -222,38 +228,41 @@ export function LeadDetails({ lead }: LeadDetailsProps) {
 
         {/* Actions */}
         <div className="flex items-center gap-2 shrink-0">
-          <Button variant="outline" size="sm" className="gap-1.5">
-            <HugeiconsIcon icon={PencilEdit01Icon} className="size-4" />
-            <span>Edit</span>
-          </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger
+          <AlertDialog>
+            <AlertDialogTrigger
               render={
-                <Button variant="outline" size="icon" className="size-9">
-                  <HugeiconsIcon
-                    icon={MoreHorizontalIcon}
-                    className="size-4"
-                  />
+                <Button variant="ghost" size="icon" className="size-10 text-destructive hover:text-destructive/80">
+                  <HugeiconsIcon icon={Delete01Icon} className="size-5" />
                 </Button>
               }
             />
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <HugeiconsIcon icon={PencilEdit01Icon} className="size-4 mr-2" />
-                Edit Lead
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <HugeiconsIcon icon={Mail01Icon} className="size-4 mr-2" />
-                Send Email
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
-                <HugeiconsIcon icon={Delete01Icon} className="size-4 mr-2" />
-                Delete Lead
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <AlertDialogContent size="sm">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Lead</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete{" "}
+                  <span className="font-medium text-foreground">{lead.name}</span>?
+                  This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  disabled={deleting}
+                  onClick={async () => {
+                    setDeleting(true);
+                    await deleteLead(lead.id);
+                    setDeleting(false);
+                    router.push("/dashboard/leads");
+                    router.refresh();
+                  }}
+                >
+                  {deleting ? "Deleting..." : "Delete"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 
@@ -467,10 +476,10 @@ export function LeadDetails({ lead }: LeadDetailsProps) {
         <div className="border rounded-xl">
           <div className="flex flex-row items-center justify-between py-5 px-5">
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" className="size-8">
-                <HugeiconsIcon
-                  icon={File01Icon}
-                  className="size-4 text-muted-foreground"
+								<Button variant="outline" size="icon" className="size-8 border-muted">
+								<HugeiconsIcon
+									icon={File01Icon}
+									className="size-4 text-muted-foreground"
                 />
               </Button>
               <h3 className="font-medium text-sm sm:text-base">

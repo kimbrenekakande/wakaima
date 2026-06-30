@@ -22,7 +22,7 @@
   },
   "registries": {
     "@coss": "https://coss.com/ui/r/{name}.json",
-    "@efferd": "https://efferd.com/r/{name}.json",
-    "@dotmatrix": "https://dotmatrix.zzzzshawn.cloud/r/{name}.json"
+    "@efferd": "https://efferd.com/r/{style}/{name}.json",
+        "@dotmatrix": "https://dotmatrix.zzzzshawn.cloud/r/{name}.json"
   }
 }

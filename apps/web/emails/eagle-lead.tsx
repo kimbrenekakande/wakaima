@@ -147,34 +147,34 @@ export const LeadEmail  = ({ leadName, draft }: WelcomeEmailProps) => (
             </Text>
 
             {/* Social icons */}
-            <Row align="left">
-              <Column className="w-full align-top">
-                <Section align="left" className="mt-8 w-[152px] mx-auto sm:mx-0">
-                  <Row align="left">
-                    <Column className="w-[20px] pr-6">
-                      <Link href="https://x.com/" className="inline-block">
-                        <Img src={`${baseUrl}/static/icons/x_dark.svg`} alt="X" width="20" height="20" className="block" />
-                      </Link>
-                    </Column>
-                    <Column className="w-[20px] pr-6">
-                      <Link href="https://instagram.com/" className="inline-block">
-                        <Img src={`${baseUrl}/static/icons/instagram-icon.svg`} alt="Instagram" width="20" height="20" className="block" />
-                      </Link>
-                    </Column>
-                    <Column className="w-[20px] pr-6">
-                      <Link href="https://tiktok.com/" className="inline-block">
-                        <Img src={`${baseUrl}/static/icons/tiktok-icon-dark.svg`} alt="TikTok" width="20" height="20" className="block" />
-                      </Link>
-                    </Column>
-                    <Column className="w-[20px]">
-                      <Link href="https://facebook.com/" className="inline-block">
-                        <Img src={`${baseUrl}/static/icons/facebook-icon.svg`} alt="Facebook" width="20" height="20" className="block" />
-                      </Link>
-                    </Column>
-                  </Row>
-                </Section>
-              </Column>
-            </Row>
+                        <Row align="left">
+                          <Column className="w-full align-top">
+                            <Section align="left" className="mt-8 w-[184px] mx-auto sm:mx-0">
+                              <Row align="left">
+                                <Column className="w-[24px] pr-5">
+                                  <Link href="https://x.com/EagleInfo_UG" className="inline-block">
+                                    <Img src={`${baseUrl}/socials/twitter-x-logo-black-round-20851.svg`} alt="X" width="24" height="24" className="block" />
+                                  </Link>
+                                </Column>
+                                <Column className="w-[24px] pr-5">
+                                  <Link href="https://www.instagram.com/eagleinfo_ug/" className="inline-block">
+                                    <Img src={`${baseUrl}/socials/CIS-A2K_Instagram_Icon_(Black).svg`} alt="Instagram" width="24" height="24" className="block" />
+                                  </Link>
+                                </Column>
+                                <Column className="w-[24px] pr-5">
+                                  <Link href="https://www.tiktok.com/@eagleinfo_ug" className="inline-block">
+                                    <Img src={`${baseUrl}/socials/tiktok_logo_icon_187623.svg`} alt="TikTok" width="24" height="24" className="block" />
+                                  </Link>
+                                </Column>
+                                <Column className="w-[24px]">
+                                  <Link href="https://www.facebook.com/eagleinfosolutions" className="inline-block">
+                                    <Img src={`${baseUrl}/socials/Facebook_icon_(black).svg`} alt="Facebook" width="24" height="24" className="block" />
+                                  </Link>
+                                </Column>
+                              </Row>
+                            </Section>
+                          </Column>
+                        </Row>
 
             <Row align="left">
               <Column className="w-full pt-8 align-top">

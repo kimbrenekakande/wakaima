@@ -69,7 +69,6 @@ export function LeadsContent({ leads }: LeadsContentProps) {
         searchQuery === "" ||
         lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (lead.contact ?? "").toLowerCase().includes(searchQuery.toLowerCase());
-
       return matchesSearch;
     });
   }, [leads, searchQuery]);
@@ -83,14 +82,13 @@ export function LeadsContent({ leads }: LeadsContentProps) {
         <div>
           <h1 className="text-lg sm:text-xl font-semibold">All Leads</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            {filteredLeads.length} lead
-            {filteredLeads.length !== 1 ? "s" : ""} found
+            {filteredLeads.length} lead{filteredLeads.length !== 1 ? "s" : ""} found
           </p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
           <Link href="/dashboard/form">
-            <Button className="gap-2 bg-foreground text-background hover:bg-foreground/90 cursor-pointer">
+            <Button className="gap-2 bg-[#cc6600] hover:bg-[#b35900] text-white cursor-pointer">
               <HugeiconsIcon icon={Add01Icon} className="size-4" />
               <span>New leads</span>
             </Button>
@@ -107,7 +105,6 @@ export function LeadsContent({ leads }: LeadsContentProps) {
       {/* Filter bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          {/* Search */}
           <div className="relative">
             <HugeiconsIcon
               icon={Search01Icon}
@@ -152,10 +149,7 @@ export function LeadsContent({ leads }: LeadsContentProps) {
           <TableBody>
             {filteredLeads.length === 0 ? (
               <TableRow>
-                <TableCell
-                  colSpan={6}
-                  className="text-center text-muted-foreground py-8"
-                >
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                   No leads found
                 </TableCell>
               </TableRow>
@@ -169,19 +163,13 @@ export function LeadsContent({ leads }: LeadsContentProps) {
                     </Link>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    <span className="text-sm text-muted-foreground">
-                      {lead.url ?? "—"}
-                    </span>
+                    <span className="text-sm text-muted-foreground">{lead.url ?? "—"}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm text-muted-foreground">
-                      {lead.contact ?? "—"}
-                    </span>
+                    <span className="text-sm text-muted-foreground">{lead.contact ?? "—"}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm text-muted-foreground">
-                      {lead.emails.length}
-                    </span>
+                    <span className="text-sm text-muted-foreground">{lead.emails.length}</span>
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">
                     <span className="text-sm text-muted-foreground">

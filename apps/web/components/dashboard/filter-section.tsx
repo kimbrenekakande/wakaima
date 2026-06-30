@@ -14,7 +14,6 @@ import { DotmSquare20 } from "@/components/ui/dotm-square-20";
 import Link from "next/link";
 import { useGenerating } from "@/lib/store";
 
-
 const dateFilterLabels: Record<DateFilter, string> = {
   all: "All Time",
   today: "Today",
@@ -27,7 +26,7 @@ const dateFilterLabels: Record<DateFilter, string> = {
 export function FilterSection() {
   const { dateFilter, setDateFilter } = useLeadsStore();
   const { isGenerating } = useGenerating();
-  
+
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
       <DropdownMenu>
@@ -55,7 +54,7 @@ export function FilterSection() {
       <div className="flex items-center gap-2 sm:gap-3">
         <DropdownMenu>
           <div className="flex items-center gap-2">
-           {isGenerating && <DotmSquare20 color="#CC5500"/>}
+           {isGenerating && <DotmSquare20 color="#cc6600"/>}
           </div>
           <DropdownMenuContent align="end">
             <DropdownMenuItem>
@@ -74,7 +73,7 @@ export function FilterSection() {
         </DropdownMenu>
 
         <Link href="/dashboard/form">
-          <Button className="gap-2 bg-foreground text-background hover:bg-foreground/90 cursor-pointer">
+          <Button className="gap-2 bg-[#cc6600] hover:bg-[#b35900] text-white cursor-pointer">
             <HugeiconsIcon icon={Add01Icon} className="size-4" />
             {isGenerating ? <span className="mr-1">Generating</span> : <span>New leads</span>}
           </Button>

@@ -41,32 +41,27 @@ import {
   MoreHorizontalIcon,
   Invoice01Icon,
   OfficeIcon,
+  Add01Icon,
 } from "@hugeicons/core-free-icons";
 import { deleteLead } from "@/lib/actions/lead-actions";
 import type { LeadsProps } from "@/lib/types";
 
 type SortBy = "newest" | "oldest" | "name_asc" | "name_desc";
 
-
 export function DashboardContent({ leads }: LeadsProps) {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<SortBy>("newest");
 
-  // Sort
   const sortedLeads = useMemo(() => {
     const result = [...leads];
 
     switch (sortBy) {
       case "newest":
-        result.sort(
-          (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-        );
+        result.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
         break;
       case "oldest":
-        result.sort(
-          (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
-        );
+        result.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
         break;
       case "name_asc":
         result.sort((a, b) => a.name.localeCompare(b.name));
@@ -90,40 +85,24 @@ export function DashboardContent({ leads }: LeadsProps) {
 
       {/* Recent Leads Table */}
       <div>
-        {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-lg sm:text-xl font-semibold">Recent Leads</h2>
             <p className="text-sm text-muted-foreground mt-0.5">
-              {sortedLeads.length} lead{sortedLeads.length !== 1 ? "s" : ""}{" "}
-              found
+              {sortedLeads.length} lead{sortedLeads.length !== 1 ? "s" : ""} found
             </p>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <Button variant="outline" className="gap-2">
-                    <HugeiconsIcon icon={Invoice01Icon} className="size-4" />
-                    <span>Import/Export</span>
-                    <HugeiconsIcon
-                      icon={ArrowDown01Icon}
-                      className="size-4 text-muted-foreground"
-                    />
-                  </Button>
-                }
-              />
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Import Leads</DropdownMenuItem>
-                <DropdownMenuItem>Export to CSV</DropdownMenuItem>
-                <DropdownMenuItem>Export to Excel</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Link href="/dashboard/form">
+              <Button className="gap-2 bg-[#cc6600] hover:bg-[#b35900] text-white cursor-pointer">
+                <HugeiconsIcon icon={Add01Icon} className="size-4" />
+                <span>New leads</span>
+              </Button>
+            </Link>
           </div>
         </div>
 
-        {/* Filter bar */}
         <div className="flex items-center justify-end gap-2 sm:gap-3 mb-4">
           <DropdownMenu>
             <DropdownMenuTrigger
@@ -157,26 +136,18 @@ export function DashboardContent({ leads }: LeadsProps) {
             <DropdownMenuTrigger
               render={
                 <Button variant="outline" size="icon" className="size-9">
-                  <HugeiconsIcon
-                    icon={MoreHorizontalIcon}
-                    className="size-4"
-                  />
+                  <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4" />
                 </Button>
               }
             />
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => {
-                  setSortBy("newest");
-                }}
-              >
+              <DropdownMenuItem onClick={() => setSortBy("newest")}>
                 Clear Filters
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
-        {/* Table */}
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -192,10 +163,7 @@ export function DashboardContent({ leads }: LeadsProps) {
             <TableBody>
               {sortedLeads.length === 0 ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className="text-center text-muted-foreground py-8"
-                  >
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                     No leads found
                   </TableCell>
                 </TableRow>
@@ -209,19 +177,13 @@ export function DashboardContent({ leads }: LeadsProps) {
                       </Link>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      <span className="text-sm text-muted-foreground">
-                        {lead.url ?? "—"}
-                      </span>
+                      <span className="text-sm text-muted-foreground">{lead.url ?? "—"}</span>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">
-                      <span className="text-sm text-muted-foreground">
-                        {lead.contact ?? "—"}
-                      </span>
+                      <span className="text-sm text-muted-foreground">{lead.contact ?? "—"}</span>
                     </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      <span className="text-sm text-muted-foreground">
-                        {lead.emails.length}
-                      </span>
+                    <TableCell>
+                      <span className="text-sm text-muted-foreground">{lead.emails.length}</span>
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
                       <span className="text-sm text-muted-foreground" suppressHydrationWarning>

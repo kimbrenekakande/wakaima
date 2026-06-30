@@ -82,7 +82,6 @@ export function EmailsContent({ emails }: EmailsContentProps) {
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
 
-
   const generateDrafts = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -142,7 +141,7 @@ export function EmailsContent({ emails }: EmailsContentProps) {
           <Button
             onClick={generateDrafts}
             disabled={loading}
-            className="gap-2 bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
+            className="gap-2 bg-[#cc6600] hover:bg-[#b35900] text-white cursor-pointer"
           >
             <HugeiconsIcon icon={Add01Icon} className="size-4" />
             <span>{loading ? "Generating..." : "New Drafts"}</span>
@@ -164,10 +163,7 @@ export function EmailsContent({ emails }: EmailsContentProps) {
               <Button variant="outline" className="gap-2">
                 <HugeiconsIcon icon={FilterIcon} className="size-4" />
                 <span>All Statuses</span>
-                <HugeiconsIcon
-                  icon={ArrowDown01Icon}
-                  className="size-4 text-muted-foreground"
-                />
+                <HugeiconsIcon icon={ArrowDown01Icon} className="size-4 text-muted-foreground" />
               </Button>
             }
           />
@@ -175,7 +171,7 @@ export function EmailsContent({ emails }: EmailsContentProps) {
             <DropdownMenuItem>All Statuses</DropdownMenuItem>
             <DropdownMenuItem>Sent</DropdownMenuItem>
             <DropdownMenuItem>Draft</DropdownMenuItem>
-            <DropdownMenuItem>Scheduled</DropdownMenuItem>
+            <DropdownMenuItem>Queued</DropdownMenuItem>
             <DropdownMenuItem>Failed</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -186,18 +182,15 @@ export function EmailsContent({ emails }: EmailsContentProps) {
               render={
                 <Button variant="outline" className="gap-2">
                   <span>Sort by</span>
-                  <HugeiconsIcon
-                    icon={ArrowDown01Icon}
-                    className="size-4 text-muted-foreground"
-                  />
+                  <HugeiconsIcon icon={ArrowDown01Icon} className="size-4 text-muted-foreground" />
                 </Button>
               }
             />
             <DropdownMenuContent align="end">
               <DropdownMenuItem>Newest First</DropdownMenuItem>
               <DropdownMenuItem>Oldest First</DropdownMenuItem>
-              <DropdownMenuItem>Budget: High to Low</DropdownMenuItem>
-              <DropdownMenuItem>Budget: Low to High</DropdownMenuItem>
+              <DropdownMenuItem>Status: Sent First</DropdownMenuItem>
+              <DropdownMenuItem>Status: Draft First</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -205,10 +198,7 @@ export function EmailsContent({ emails }: EmailsContentProps) {
             <DropdownMenuTrigger
               render={
                 <Button variant="outline" size="icon" className="size-9">
-                  <HugeiconsIcon
-                    icon={MoreHorizontalIcon}
-                    className="size-4"
-                  />
+                  <HugeiconsIcon icon={MoreHorizontalIcon} className="size-4" />
                 </Button>
               }
             />
@@ -228,15 +218,15 @@ export function EmailsContent({ emails }: EmailsContentProps) {
 
       {/* Table */}
       <Table>
-        <TableCaption>Current Lead Email Queue.</TableCaption>
+        <TableCaption>A list of your email drafts and sent emails.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Ref</TableHead>
+            <TableHead>Subject</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead className="text-right">Lead</TableHead>
-            <TableHead className="text-right">Contact</TableHead>
-            <TableHead className="text-right">Created</TableHead>
-            <TableHead className="w-10 text-right" />
+            <TableHead>Lead</TableHead>
+            <TableHead>Contact</TableHead>
+            <TableHead>Created</TableHead>
+            <TableHead className="w-10" />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -265,10 +255,10 @@ export function EmailsContent({ emails }: EmailsContentProps) {
                   {email.status}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right">{email.lead?.name ?? "-"}</TableCell>
-              <TableCell className="text-right">{email.lead?.contact ?? "-"}</TableCell>
-              <TableCell className="text-right">{email.createdAt}</TableCell>
-              <TableCell className="flex justify-end">
+              <TableCell>{email.lead?.name ?? "—"}</TableCell>
+              <TableCell>{email.lead?.contact ?? "—"}</TableCell>
+              <TableCell>{email.createdAt}</TableCell>
+              <TableCell>
                 <AlertDialog>
                   <AlertDialogTrigger
                     render={
@@ -312,10 +302,7 @@ export function EmailsContent({ emails }: EmailsContentProps) {
           ))}
         </TableBody>
         <TableFooter>
-          <TableRow>
-            {/*<TableCell colSpan={4}>Total Emails</TableCell>
-            <TableCell className="text-right">{emails.length}</TableCell>*/}
-          </TableRow>
+          <TableRow />
         </TableFooter>
       </Table>
     </main>

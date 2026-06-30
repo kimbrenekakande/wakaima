@@ -1,14 +1,30 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { Header } from "@/components/header";
+import { HeroSection } from "@/components/hero";
+import { LogosSection } from "@/components/logos-section";
+import AutomatedTasksPanel from "@/components/ruixen/automated-tasks-panel";
+import FooterPro from "@/components/ruixen/footer-pro";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function () {
+export default async function LandingPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
-    <div className="flex flex-col h-screen w-screen items-center justify-center place-self-center">
-      <Button size={"lg"}>
-          <Link href={"/dashboard"}>
-            Enter
-          </Link>
-        </Button>
-    </div>
-  )
+    <>
+      <Header />
+      <main>
+        <HeroSection />
+        <LogosSection />
+        <AutomatedTasksPanel />
+        <FooterPro />
+      </main>
+    </>
+  );
 }

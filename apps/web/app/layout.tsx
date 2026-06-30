@@ -14,8 +14,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Leads - Square UI",
-  description: "A modern leads management dashboard",
+  title: "WakaimaOS | The Agentic CMS",
+  description: "AI-powered lead management — discover leads, draft emails, and close more deals.",
+  icons: {
+    icon: [
+      { url: "/brand/wakaima-logo-black.png", media: "(prefers-color-scheme: light)" },
+      { url: "/brand/wakaima-logo-white.png", media: "(prefers-color-scheme: dark)" },
+    ],
+  },
 };
 
 export default function RootLayout({
