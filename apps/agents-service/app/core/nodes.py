@@ -28,7 +28,7 @@ async def search_node(state: leadsSearchState):
     results = exa.search_and_contents(
         query,
         category="company",
-        num_results=10,
+        num_results=100,
         type="deep",
     )
 

@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         const resend = new Resend(process.env.RESEND_API_KEY);
         const { data, error } = await resend.emails.send({
           from: 'Eagle Info Solutions <sales@alerts.eagleinfosolutions.com>',
-          to: "kimbrenekakande@gmail.com",
+          to: lead.contact,
           subject: 'Eagle Info Solutions',
           react: LeadEmail({ leadName: lead.name, draft: draft.body })
         });
