@@ -141,7 +141,7 @@ export const LeadEmail  = ({ leadName, draft }: WelcomeEmailProps) => (
 
           {/* Footer */}
           <Section className="mobile:px-4 mobile:py-12 border-neutral-200 dark:border-neutral-800 border-t px-6 py-16">
-            <Text className="text-[13px] text-neutral-500 dark:text-neutral-400 m-0 max-w-[320px]">
+            <Text className="text-[13px] text-neutral-500 dark:text-neutral-400 m-0 max-w-[320px] text-center sm:text-left">
               Eagle Info Solutions is your ideal Information Technology partner,
               dealing in hardware retail software & Tech Support.
             </Text>
@@ -149,7 +149,7 @@ export const LeadEmail  = ({ leadName, draft }: WelcomeEmailProps) => (
             {/* Social icons */}
             <Row align="left">
               <Column className="w-full align-top">
-                <Section align="left" className="mt-8 w-[152px]">
+                <Section align="left" className="mt-8 w-[152px] mx-auto sm:mx-0">
                   <Row align="left">
                     <Column className="w-[20px] pr-6">
                       <Link href="https://x.com/" className="inline-block">
@@ -178,7 +178,7 @@ export const LeadEmail  = ({ leadName, draft }: WelcomeEmailProps) => (
 
             <Row align="left">
               <Column className="w-full pt-8 align-top">
-                <Text className="text-[11px] text-neutral-500 dark:text-neutral-400 m-0">
+                <Text className="text-[11px] text-neutral-500 dark:text-neutral-400 m-0 text-center sm:text-left">
                   Shop L28, 1st Floor, Nalubega Complex, Kampala, Uganda
                   <br />
                   (Opp Watoto Church, Bombo Road)
@@ -188,7 +188,7 @@ export const LeadEmail  = ({ leadName, draft }: WelcomeEmailProps) => (
 
             <Row align="left">
               <Column className="w-full pt-5 align-top">
-                <Text className="text-[11px] text-neutral-500 dark:text-neutral-400 m-0 max-w-[160px]">
+                <Text className="text-[11px] text-neutral-500 dark:text-neutral-400 m-0 max-w-[160px] text-center sm:text-left">
                   <Link
                     href="https://eagleinfosolutions.com/"
                     className="text-neutral-500 dark:text-neutral-400 underline"
