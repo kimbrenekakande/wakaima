@@ -50,7 +50,7 @@ export async function POST(
     if (updatedBody) {
       await prisma.email.update({
         where: { id: emailId },
-        data: { body: updatedBody },.
+        data: { body: updatedBody },
       });
     }
 
