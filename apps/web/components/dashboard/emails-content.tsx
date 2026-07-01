@@ -87,10 +87,19 @@ export function EmailsContent({ emails }: EmailsContentProps) {
     setError(null);
     try {
       const res = await fetch("/api/emails", { method: "POST" });
+      const data = await res.json();
+
       if (!res.ok) {
-        const data = await res.json();
         throw new Error(data.error || `Server error: ${res.status}`);
       }
+
+      // Surface partial-success warnings (some chunks may have timed out)
+      if (data.warnings?.length) {
+        setError(
+          `Generated ${data.drafts} draft(s) with issues:\n${data.warnings.join("\n")}`,
+        );
+      }
+
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to generate drafts");
